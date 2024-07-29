@@ -14,6 +14,7 @@ Fehler, Verbesserungsvorschläge und Ergänzungen bitte ich an
 - Beweis von Satz 9.18 (Dominated convergence theorem): *Ich habe den Beweis aus der VO inkl. Anmerkungen aus dem Email vom 19.4.2024, kann die Struktur aber noch nicht ganz nachvollziehen bzw. ausarbeiten.*
 - Ich habe leider keine Notizen aus der ersten Vorlesung (8.1, 8.2, 8.3).
 - Umlaute und ß müssen noch durch find & replace ergänzt werden.
+- Es sind noch einige Kommentare im Code, die noch nicht hier angeführt sind.
 ### Änderungen
 Die größte Änderung war die Änderung der Kapitelnummerierungen und das Weglassen der Abschnittsnummerierungen (da die Sätze nur nach Kepitel nummeriert sind). Da ich diese Änderung erst spät übernommen habe, könnten eventuell Sätze innerhalb des Dokuments falsch zitiert sein (z.B. 11.9 statt 10.9).
 - Im ersten Portemanteau theorem (Satz 11.5) habe ich im Beweis gleich am Anfang f_epsilon für alle reellen t statt nur positive definiert. 
