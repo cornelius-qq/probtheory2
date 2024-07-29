@@ -25,31 +25,6 @@
 
 %% PROGRESS 90/90 pages, 37h %%
 
-% TODO Umlaute und \ss{} find and replace
-% TODO Fragen wegen (8) und (9) in Satz 12.7 (Radon-Nikodym f\"ur sigma-endliche Ma\ss{}e)
-% TODO Beispiel 13.2. siehe Kommentar unten
-% TODO Prop 13.3 siehe Kommentar unten (2 Probleme)!
-% TODO Prop 13.4 reell oder erweitert-reell?
-% TODO Bemerkung nach Definition 9.22 siehe unten
-% TODO Lemma 8.6 nachtragen + Bemerkungen nach Lemma 8.5
-% TODO Proposition 8.10 Frage (siehe unten)
-% TODO Beweis von Proposition 8.17
-
-
-%% Changes to lecture notes %%
-% Portemanteau I, Teil III: am anfang t in R statt t>0
-% Satz 11.9 habe hier MONK statt DOMK geschrieben? (bin mir nicht sicher)
-% Satz 11.10 (Helly) Teilfolgen?
-% Satz 11.13 (Prokorov) Konvergenz in d oder pw?
-% Satz 11.20 (L\'evy) ???
-% In Definition 13.1 (bed. EW, pdf) habe ich ein paar Sachen erg\"anzt
-% Prop. 9.6 siehe unten (drei Sachen!)
-% Satz 9.13 Teilmenge einer Nullmenge
-% Abschnitt Konvergenz von Funktionen in R^k zu R^d ausgebessert (siehe unten)
-% Definition 8.14. siehe unten
-% 8.15 und 8.16 getauscht (siehe unten)
-% Reihenfolge von 8.23 bis 8.25 ge\"andert.
- 
 \begin{document}
 \maketitle
 
@@ -80,24 +55,7 @@ Fehler oder Erg\"anzungen bitte an
 \end{itemize}
 \end{multicols}
 
-\textbf{\"Anderungen und Unklarheiten:}
-\begin{multicols}{2}
-\begin{itemize}
-    \item Portemanteau I, Teil III: am Anfang $t\in\mathbb{R}$ statt $t>0$
-    \item Satz 11.9: MONK statt DOMK?
-    \item Satz 11.10 Teilfolgen mit Helly?
-    \item Satz 11.13 Konvergenz in Verteilung oder punktweise?
-    \item Definition 13.1: Erg\"anzungen
-    \item Proposition 9.6
-    \item Proposition 9.13 Messbarkeit? (Teilmenge einer Nullmenge)
-    \item \"Uberall: Dimension von $k$ zu $d$ ge\"andert
-    \item Reihenfolge von 8.15 und 8.16 getauscht
-    \item Reihenfolge von 8.23 bis 8.25 ver\"andert
-\end{itemize}
-\end{multicols}
-
 \tableofcontents
-\newpage
 
 %\makeatletter
 %\renewcommand{\paragraph}{
@@ -450,7 +408,6 @@ Mit dem Kontrapositiv von Fubini (Satz 8.12) gilt also $\E|f(X,Y)|=\infty$.
 \addcontentsline{toc}{section}{Messbarkeit $\mathbb{R}^d$-wertiger Funktionen}
 Betrachte in diesem Abschnitt $\R^d$-wertige Abbildungen (statt $\overline\R^d$, der Einfachheit wegen) und die euklidische Norm $\Vert x\Vert_2=\left(\sum_{i=1}^dx_i^2\right)^{1/2}$ f\"ur $x\in\R^d,x=(x_1,\hdots,x_d)'$.
 
-% Ich habe Definition 8.20/21? gleich hier angeh\"angt
 \paragraph{8.14. Definition:}
 \begin{enumerate}[label=(\roman*)]
     \item Sei $\mathcal{O}_d:=\left\{O\subseteq\R^d:O \text{ offen}\right\}$ die Familie aller offenen Mengen in $\R^d$. Die Borel-$\sigma$-Algebra auf $\R^d$ ist definiert als
@@ -839,11 +796,10 @@ Seien in diesem Abschnitt $f_n:(\Omega,\A)\to(\overline\R,\mathcal{B}(\overline\
 \paragraph{9.22. Definition:} Sei $\mu$ endlich. Eine Folge messbarer Funktionen $f_n,n\geq1$ ist gleichgradig integrierbar ("uniformly integrable", g.i.), falls
 $$\lim_{\alpha\to\infty}\limsup_{n\to\infty}\int\displaylimits_{|f_n|\geq\alpha}|f_n|\ d\mu=0$$
 
-% Hier br\"acuhte ich auch noch eine Erkl\"arung warum aus f<infty a.e. die Konvergenz vom Produkt mit der Indikatorfunktion folgt
 \paragraph{Bemerkung:}Eine konstante Folge absolut integrierbarer, reellwertiger Funktionen ist gleichgradig integrierbar, da
 $$\lim_{\alpha\to\infty}\int\displaylimits_{\{|f|\geq\alpha\}}|f|\ d\mu=\lim_{\alpha\to\infty}\int|f|\cdot\ind{\{|f|\geq\alpha\}}\ d\mu$$
 wobei $|f|<\infty$ f.\"u., da $f\in L_1$ und damit 
-$$|f|\cdot\ind{\{|f|\geq\alpha\}}\nto{a.e.}{\alpha\to\infty}0\overset{a.e.}{=}\ind{\{|f|=\infty\}}$$
+$$|f|\cdot\ind{\{|f|\geq\alpha\}}\nto{a.e.}{\alpha\to\infty}|f|\cdot0\overset{a.e.}{=}\ind{\{|f|=\infty\}}$$
 Da $|f|\cdot\ind{\{|f|\geq\alpha\}}\leq f\in L_1$ folgt mit DOMK
 $$\int\displaylimits_{\{|f|\geq\alpha\}}|f|\ d\mu\nto{}{\alpha\to\infty}\mu(|f|=\infty)=0$$
 
@@ -1367,7 +1323,6 @@ Sei $Z\sim\mathcal{N}(0,\sigma^2)$. Dann gilt (einfache \"uberlegung) $X_n-Z\nto
 
 \paragraph{11.10. Satz} Seien $X_n,n\geq 1$ gleichgradig integrierbar und $X_n\nto{d}{n\to\infty}X$. Dann folgt $X\in L_1$ und $\E X_n\nto{}{n\to\infty}\E X$.
 
-% Hier im Beweis fehlt noch der allgemeine Fall aus der Email (Handout 6, Details zu Satz 11.9!)
 \paragraph{Beweis:}
 \begin{enumerate}[label=\Roman*.]
     \item $X_n,n\geq0$ und $X$ alle nicht-negativ\newline 
@@ -1492,15 +1447,14 @@ Die entsprechende Folge der Ma\ss{}e/cdfs nennt man dann \textit{straff}.
 \begin{enumerate}[label=(\roman*)]
     \item Die $F_n,n\geq1$ sind straff.
     \item Jede Teilfolge $F_{n_i},i\geq1$ enth\"alt eine weitere Teilfolge $F_{n_{i_k}},k\geq1$, sodass 
-        $$F_{n_{i_k}}\nto{}{k\to\infty}F$$
+        $$F_{n_{i_k}}\nto{d}{k\to\infty}F$$
         f\"ur eine cdf $F$.
-        % geh\"ort hier Konvergenz in Stetigkeitspunkten oder punktweise?
 \end{enumerate}
 
 \paragraph{Beweis:}
 \begin{enumerate}[label=\Roman*.]
     \item (i)$\implies$(ii)\newline
-    Helly's Selection Theorem (Satz 11.11) liefert uns eine Teilfolge $F_{n_{i_k}},k\geq1$ und eine monoton nicht-fallende cádlág Funktion $F$, sodass $F_{n_{i_k}}\nto{}{k\to\infty}F$. Zeige also 
+    Helly's Selection Theorem (Satz 11.11) liefert uns eine Teilfolge $F_{n_{i_k}},k\geq1$ und eine monoton nicht-fallende cádlág Funktion $F$, sodass $F_{n_{i_k}}\nto{d}{k\to\infty}F$. Zeige also 
     $$F(t)\nto{}{t\to\infty}1\text{ und }F(t)\nto{}{t\to-\infty}0$$
     Da die $F_n,n\geq1$ straff sind, kann man $M_\ell,\ell\geq1$ w\"ahlen, sodass
     $$\sup_{n\geq1}\left[F_n(-M_\ell)+1-F_n(M_\ell)\right]\leq\sup_{n\geq1}\Pp(|X_n|>M_\ell)<\dfrac{1}{\ell}$$
