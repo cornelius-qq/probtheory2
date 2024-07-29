@@ -1,0 +1,2184 @@
+\documentclass[11pt]{report}
+\title{Wahrscheinlichkeitstheorie 2}
+\author{Cornelius Hanel}
+\usepackage{geometry}
+\geometry{margin=2.51cm} % 2.51 default
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage[makeroom]{cancel}
+\usepackage{enumitem}
+\usepackage{pgfplots}
+\usepackage{multicol}
+\usepackage{ulem}
+\pgfplotsset{compat=1.15}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black,
+    linktoc=all
+}
+
+%% PROGRESS 90/90 pages, 37h %%
+
+% TODO Umlaute und \ss{} find and replace
+% TODO Fragen wegen (8) und (9) in Satz 12.7 (Radon-Nikodym f\"ur sigma-endliche Ma\ss{}e)
+% TODO Beispiel 13.2. siehe Kommentar unten
+% TODO Prop 13.3 siehe Kommentar unten (2 Probleme)!
+% TODO Prop 13.4 reell oder erweitert-reell?
+% TODO Bemerkung nach Definition 9.22 siehe unten
+% TODO Lemma 8.6 nachtragen + Bemerkungen nach Lemma 8.5
+% TODO Proposition 8.10 Frage (siehe unten)
+% TODO Beweis von Proposition 8.17
+
+
+%% Changes to lecture notes %%
+% Portemanteau I, Teil III: am anfang t in R statt t>0
+% Satz 11.9 habe hier MONK statt DOMK geschrieben? (bin mir nicht sicher)
+% Satz 11.10 (Helly) Teilfolgen?
+% Satz 11.13 (Prokorov) Konvergenz in d oder pw?
+% Satz 11.20 (L\'evy) ???
+% In Definition 13.1 (bed. EW, pdf) habe ich ein paar Sachen erg\"anzt
+% Prop. 9.6 siehe unten (drei Sachen!)
+% Satz 9.13 Teilmenge einer Nullmenge
+% Abschnitt Konvergenz von Funktionen in R^k zu R^d ausgebessert (siehe unten)
+% Definition 8.14. siehe unten
+% 8.15 und 8.16 getauscht (siehe unten)
+% Reihenfolge von 8.23 bis 8.25 ge\"andert.
+ 
+\begin{document}
+\maketitle
+
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+Fehler oder Erg\"anzungen bitte an
+\newline
+\begin{center}
+    \texttt{corneliush99@univie.ac.at}
+\end{center}
+
+\textbf{Es fehlt noch:}
+\begin{multicols}{2}
+\begin{itemize}
+    \item \sout{Beweis von Satz 10.2} \checkmark
+    \item \sout{Beweis von Satz 10.3} \checkmark
+    \item \sout{Illustration im Beweis von PMT1, Teil 3} \checkmark 
+    \item \sout{Lindeberg CLT} \checkmark
+    \item \sout{Ljapunov CLT} \checkmark
+    \item \sout{Satz 12.8: R\textendash N f\"ur signierte Ma\ss{}e} \checkmark
+    \item \sout{Satz 11.10 allgemeiner Fall (Handout)} \checkmark
+    \item \sout{Beweis von Satz 9.24} \checkmark
+    \item \sout{Beweis von Satz 9.25} \checkmark
+    \item Lemma 8.6 und Bemerkungen
+    \item Beweis von Proposition 8.17
+    \item Beweis von Satz 9.18
+    \item Anfang von Kapitel 8
+\end{itemize}
+\end{multicols}
+
+\textbf{\"Anderungen und Unklarheiten:}
+\begin{multicols}{2}
+\begin{itemize}
+    \item Portemanteau I, Teil III: am Anfang $t\in\mathbb{R}$ statt $t>0$
+    \item Satz 11.9: MONK statt DOMK?
+    \item Satz 11.10 Teilfolgen mit Helly?
+    \item Satz 11.13 Konvergenz in Verteilung oder punktweise?
+    \item Definition 13.1: Erg\"anzungen
+    \item Proposition 9.6
+    \item Proposition 9.13 Messbarkeit? (Teilmenge einer Nullmenge)
+    \item \"Uberall: Dimension von $k$ zu $d$ ge\"andert
+    \item Reihenfolge von 8.15 und 8.16 getauscht
+    \item Reihenfolge von 8.23 bis 8.25 ver\"andert
+\end{itemize}
+\end{multicols}
+
+\tableofcontents
+\newpage
+
+%\makeatletter
+%\renewcommand{\paragraph}{
+%    \@startsection {paragraph}{4}
+%    {\z@ }{3.25ex \@plus 1ex \@minus .2ex}{-1em} %change the 3.25ex to some different value maybe
+%    {\normalfont \normalsize \bfseries }
+%}
+%\makeatother
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\del}{\partial}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\G}{\mathcal{G}}
+\renewcommand{\geq}{\geqslant}
+\renewcommand{\leq}{\leqslant}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Pp}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\pspace}{(\Omega, \mathcal{A}, \Pp)}
+\newcommand{\borel}{\mathcal{B}(\R)}
+\newcommand{\ind}[1]{\mathds{1}_{#1}}
+\newcommand{\nto}[2]{\xrightarrow[#2]{\makebox[1.5em][c]{$\scriptstyle#1$}}}‌
+
+\chapter*{8. Produktr\"aume und Produktma\ss{}e}
+\addcontentsline{toc}{chapter}{8. Produktr\"aume und Produktma\ss{}e}
+% Hier fehlt noch die erste Vorlesungseinheit/woche
+\paragraph{8.4. Lemma:}$\cR^*$ ist eine Algebra.
+
+\paragraph{Beweis:}
+\begin{itemize}
+    \item $\Omega\in\cR^*$: folgt sofort aus $\Omega=\Omega_1\times\Omega_2$ und $\Omega_1\in\A_1,\Omega_2\in\A_2$.
+    \item $A,B\in\cR^*\implies A\cap B\in\cR^*$: Schreibe $A=\bigcup_{i=1}^kA_{i,1}\times\hdots\times A_{i,d}$ und $B=\bigcup_{j=1}^\ell B_{j,1}\times\hdots\times B_{j,d}$. Dann gilt
+    \begin{align*}
+        A\cap B&=\left(\bigcup_{i=1}^kA_{i,1}\times\hdots\times A_{i,d}\right)\cap\left(\bigcup_{j=1}^\ell B_{j,1}\times\hdots\times B_{j,d}\right)\\
+        &=\bigcup_{i=1}^k\bigcup_{j=1}^\ell\left(A_{i,1}\times\hdots\times A_{i,d}\cap B_{j,1}\times\hdots\times B_{j,d}\right)
+    \end{align*}
+    Wir wissen, dass eine Vereinigung zweier messbarer Rechtecke wieder ein messbares Rechteck ist. Damit gilt $A\cap B\in\cR^*$.
+    \item $A\in\cR^*\implies A^c\in\cR^*$: Sei hier auch wieder $A=\bigcup_{i=1}^kA_{i,1}\times\hdots\times A_{i,d}$. Dann gilt mit de Morgan $A^c=\bigcap_{i=1}^k(A_{i,1}\times\hdots\times A_{i,d})^c$. Zeige also, dass das Komplement eines messbaren Rechtecks eine endliche Vereinigung messbarer Rechtecke ist (dann folgt mit Abgeschlossenheit bez\"uglich endlicher Durchschnitte die Aussage). Zeige also
+    $$A_1\times\hdots\times A_d\in\cR\implies(A_1\times\hdots\times A_d)^c\in\cR^*$$
+    Definiere dazu f\"ur $i=1,\hdots,d$ die Koordinatenabbildungen
+    $$\pi_i:\Omega\to\Omega_i,\ (\omega_1,\hdots,\omega_d)\mapsto\omega_i$$
+    Dann gilt
+    $$A_1\times\hdots\times A_d=\bigcap_{i=1}^d\left\{\pi_i\in A\right\}$$
+    und es folgt
+    $$(A_1\times\hdots\times A_d)^c=\bigcup_{j=1}^d\bigcup_{\substack{J\subseteq\{1,\hdots,d\}\\|J|=j}}\left[\left(\bigcap_{i\in J}\{\pi_i\notin A_i\}\right)\cap\left(\bigcap_{i\notin J}\{\pi_i\in A_i\}\right)\right]$$
+    wobei $\left(\bigcap_{i\in J}\{\pi_i\notin A_i\}\right)\cap\left(\bigcap_{i\notin J}\{\pi_i\in A_i\}\right)\in\cR$ disjunkt sind. Da die Vereinigung endlich ist, folgt die Aussage. \qed
+\end{itemize}
+
+\paragraph{Bemerkung:} Bisher ist $\mu:\cR\to[0,\infty]$ definiert als $\mu(A_1\times\hdots\times A_d):=\mu(A_1)\cdot\hdots\cdot\mu(A_d)$. Wir erweitern $\mu$ nun zu einer Abbildung $\mu^*:\cR^*    \to[0,\infty]$ mit 
+$$\displaystyle\mu^*\left(\bigcup_{i=1}^k R_i\right):=\sum_{i=1}^k\mu(R_i)$$ f\"ur $R_i\in\cR,i=1,\hdots,k$ disjunkt.
+
+% Da mu* nicht auf einer sigma-Algebra definiert ist, kann es imo kein Ma\ss{} ein, sondern nur ein Pr\"ama\ss{} (da R* eine Algebra und damit auch ein Mengenring ist, aber eben keine sigma-Algebra).
+\paragraph{8.5. Lemma:} Die Abbildung $\mu^*$ (definiert wie oben) ist ein Pr\"ama\ss{} und unabh\"angig von der Darstellung von $R=\bigcup_{i=1}^k R_i$.
+
+\paragraph{Beweis:}$\mu^*(\emptyset)=0$ und $\mu^*(A)\geq0$ sind trivial. Zeige also die $\sigma$-Additivit\"at.\newline
+Seien also $R_1,R_2,\hdots,\in\cR^*$ disjunkt und insbesondere $\bigcup_{i=1}^\infty R_i\in\cR^*$. Damit folgt
+$$\bigcup_{i=1}^\infty R_i=\bigcup_{j=1}^m S_j$$
+mit $S_j\in\cR,j=1,\hdots,m$. 
+% Hier fehlt noch der Rest vom Beweis f\"ur die sigma-Additivit\"at.
+\newline
+Zur Unabh\"angigkeit von der Darstellung: Sei $A=\bigcup_{i=1}^n R_i=\bigcup_{j=1}^mS_j$ mit $R_i,S_j\in\cR$ f\"ur $i=1,\hdots,n$ und $j=1,\hdots,m$. Dann gilt
+\begin{align*}
+    \mu^*\left(\bigcup_{i=1}^nR_i\right)&\overset{\text{Def.}}{=}\sum_{i=1}^n\mu(R_i)\\
+    &=\sum_{i=1}^n\mu(R_i\cap A)
+    =\sum_{i=1}^n\mu\left(R_i\cap \bigcup_{j=1}^mS_j\right) \\
+    &=\sum_{i=1}^n\mu\left(\bigcup_{j=1}^m(S_j\cap R_i)\right)
+    =\sum_{i=1}^n\sum_{j=1}^m\mu\left(S_j\cap R_i\right)\\
+    &=\sum_{j=1}^m\mu\left(S_j\cap \bigcup_{i=1}^nR_i\right)=\sum_{j=1}^m\mu(S_j)\\
+    &=\mu^*\left(\bigcup_{j=1}^mS_j\right)
+\end{align*}
+\qed
+
+% Warum m\"ussen wir hier sigma-Endlichkeit zeigen? Der Ma\ss{}erweiterungssatz von Caratheodory verlangt nur nach einem Pr\"ama\ss{} und einem Mengenring. Ich verstehe, dass wir f\"ur die Eindeutigkeit des Produktma\ss{}es sigma-Endlichkeit brauchen, oder?
+% Die sigma-additivit\"at haben wir doch gerade eben gezeigt?
+\paragraph{Bemerkung:}Um $\mu^*$ nun zu einem Ma\ss{} auf $(\prod_{i=1}^n\Omega_i,\sigma(\cR^*))$ zu erweitern, sind mit dem Ma\ss{}erweiterungssatz von Carath\'eodory folgende Voraussetzungen notwendig:
+\begin{enumerate}[label=(\roman*)]
+    \item $\mu^*(\emptyset)=0$ (bereits gezeigt).
+    \item $\sigma$-Additivit\"at: F\"ur $A_i\in\cR^*$ disjunkt mit $\bigcup_{i\geq1}A_i\in\cR^*$ gilt 
+    $$\mu^*\left(\bigcup_{i\geq1}A_i\right)=\sum_{i\geq1}\mu^*(A_i)$$
+    \item $\sigma$-Endlichkeit: $\exists B_j\in\cR^*,j\geq1:\Omega=\bigcup_{j\geq1}B_j$ und $\forall j\geq1:\mu^*(B_j)<\infty$.
+\end{enumerate}
+
+% Hier fehlen noch die Erl\"auterungen zu (ii) und (iii) aus den Notizen und Lemma 8.6 mit Beweis
+
+\paragraph{8.7. Satz:}Seien $(\Omega_i,\A_i,\mu_i)$ jeweils $\sigma$-endliche Ma\ss{}r\"aume f\"ur $i=1,\hdots,d$. Dann exisitert mit dem Ma\ss{}erweiterungssatz von Carath\'eodory ein eindeutiges $\sigma$-endliches Ma\ss{} $\mu$ auf dem Produktraum $(\prod_{i=1}^d\Omega_i,\bigotimes_{i=1}^d\A_i)$ mit der Eigenschaft, dass
+$$\forall A_i\in\A_i,i=1,\hdots,d:\mu(A_1\times\hdots\times A_d)=\prod_{i=1}^d\mu_i(A_i)$$
+Man nennt $\mu$ das Produktma\ss{}.
+
+% Hier m\"usste man im Prinzip nur den Ma\ss{}erweriterungssatz von Carath\'eodory anwenden und die entsprechenden Ergebnisse zitieren oder?
+\paragraph{Beweis:}Ohne Beweis. % folgt
+
+\paragraph{8.8. Korollar:}Seien $F_1,\hdots,F_d$ Verteilungsfunktionen auf $\R$. Dann gibt es einen Wahrscheinlichkeitsraum $\pspace$ und Zufallsvariablen $X_i:\Omega\to\R,i=1,\hdots,d$, sodass $X_i\sim F_i$ und die $X_i$ unabh\"angig sind.
+
+\paragraph{Beweis:}Jedes $F_i$ definiert ein Wahrscheinlichkeitsma\ss{} $\Pp_i$ auf $(\R,\borel)$ mit
+$$\Pp_i((-\infty,t]):=F_i(t)$$
+(cf. Satz 3.17). Definiere $\Omega:=\R^d,\A:=\bigotimes_{i=1}^d\borel=\mathcal{B}(\R^d),\Pp:=\bigotimes_{i=1}^d\Pp_i,X_i:=\pi_i$. Dann sind die $X_i,i=1,\hdots,d$ alle messbar und f\"ur $t\in\R$ und $i=1,\hdots,d$ gilt
+$$\Pp(X_i\leq t)=\Pp(\R\times\hdots\times(-\infty,t]\times\hdots\times\R)=1\cdot\hdots\cdot\Pp_i((-\infty,t])\cdot\hdots\cdot1=F_i(t)$$
+Schlie\ss{}lich gilt f\"ur $t\in\R^d$ und $i=1,\hdots,d$
+$$\Pp(X_1\leq t_1,\hdots,X_d\leq t_d)=\Pp((\infty,t_1]\times\hdots\times(-\infty,d_t])=\prod_{i=1}^d\Pp_i(-\infty,t_i]$$
+sodass die $X_i$ unabh\"angig sind. \qed
+
+\section*{Produktma\ss{} und Integral}
+\addcontentsline{toc}{section}{Produktma\ss{} und Integral}
+Betrachte in diesem Abschnitt zwei $\sigma$-endliche Ma\ss{}r\"aume $(\Omega_i,\A_i,\mu_i),i=1,2$, den entsprechenden Produktaum $(\Omega_1\times\Omega_2,\A_1\otimes\A_2,\mu_1\otimes\mu_2)$, sowie einen weiteren messbaren Raum $(\Omega',\A')$.
+
+\paragraph{8.9. Definition:}Sei $\omega_1\in\Omega_1$ fixiert.
+\begin{enumerate}[label=(\roman*)]
+    \item F\"ur $A\subseteq\Omega_1\times\Omega_2$ sei
+    $$A_{\omega_1}:=\left\{\omega_2\in\Omega_2:(\omega_1,\omega_2)\in A\right\}$$
+    der $\omega_1$-Schnitt ($\omega_1$-section) von $A$.
+    \item F\"ur $f:\Omega_1\times\Omega_2\to\Omega'$ sei
+    $$f_{\omega_1}:\Omega_2\to\Omega',\omega_2\mapsto f(\omega_1,\omega_2)$$
+    der $\omega_1$-Schnitt ($\omega_1$ section) von $f$.
+\end{enumerate}
+
+\paragraph{Bemerkung:}Es gilt (einfacher Beweis, siehe \"Ubung)
+\begin{enumerate}[label=(\roman*)]
+    \item $(\ind{A})_{\omega_1}=\ind{A_{\omega_1}}$
+    \item F\"ur $A'\subseteq\Omega'$ ist $f^{-1}_{\omega_1}(A')=(f^{-1}(A'))_{\omega_1}$
+\end{enumerate}
+
+\paragraph{8.10. Proposition:}Sei $\omega_1\in\Omega_1$ fixiert. Dann gilt
+\begin{enumerate}[label=(\roman*)]
+    \item Ist $A\in\A_1\otimes A_2$, dann ist $A_{\omega_1}\in\A_2$
+    \item Ist $f:\Omega_1\times\Omega_2\to\Omega'$ $\A_1\otimes\A_2\textendash\A'$-messbar, dann ist $f_{\omega_1}:\Omega_2\to\Omega'$ $\A_2\textendash\A'$-messbar.
+\end{enumerate}
+Analoges gilt nat\"urlich f\"ur die entsprechenden $\omega_2$-Schnitte.
+
+\paragraph{Beweis:}Betrachte f\"ur $\omega_1\in\Omega_1$ fixiert die Abbildung $g_{\omega_1}:\Omega_2\to\Omega_1\times\Omega_2,\omega_2\mapsto(\omega_1,\omega_2)$. Dann gilt
+\begin{align*}
+    % Hier frage ich mich ob R (statt R*) auch die Produkt-sigma-Algebra erzeugt (m\"usste denke ich schon)
+    \forall A=(A_1\times A_2)\in\cR:g_{\omega_1}^{-1}(A)=
+    \begin{cases}
+        A_2&\text{ falls }\omega_1\in\A_1\\
+        \emptyset&\text{ falls }\omega_1\in\A_1
+    \end{cases}
+\end{align*}
+Damit ist $g_{\omega_1}$ $\A_2\textendash\A_1\otimes\A_2$-messbar (Da Messbarkeit im Erzeugendensystem eine hinreichende Bedingung ist). Damit folgt nun
+\begin{enumerate}[label=(\roman*)]
+    \item $A_{\omega_1}=\left\{\omega_2\in\Omega_2:(\omega_1,\omega_2)\in A\right\}=g_{\omega_1}^{-1}(A)\in\A_2$
+    \item $f_{\omega_1}(\omega_2)=f(\omega_1,\omega_2)=f(g(\omega_1,\omega_2))=(f\circ g)(\omega_2)$
+\end{enumerate}
+womit die Messbarkeit von $f_{\omega_1}$ aus der Messbarkeit von Zusammemsetzungen messbarer Funktionen folgt. \qed
+
+\paragraph{8.11. Satz (Tonelli's Theorem):}Sei $f:\Omega_1\times\Omega_2\to\overline\R$ nicht-negativ und messbar. Dann ist die Abbildung
+$$s_1:\Omega_1\to\overline\R\text{ mit }\omega_1\mapsto\int_{\Omega_2}f_{\omega_1}\ d\mu_2$$
+nicht-negativ und messbar und es gilt
+$$\int_{\Omega_1\times\Omega_2}f \ d(\mu_1\otimes\mu_2)=\int_{\Omega_1}s_1\ d\mu_1=\int_{\Omega_1}\left(\int_{\Omega_2}f_{\omega_1}\ d\mu_2\right)\ d\mu_1$$
+
+\paragraph{Bemerkung:}Die $\sigma$-Endlichkeit von $\mu_1$ und $\mu_2$ ist hier notwendig. Ein analoges Ergebnis gilt auch wenn die Reihenfolge der Integrale ge\"andert wird.
+
+\paragraph{Beweis:}Betrachte zun\"achst den Fall wo $\mu_1$ und $\mu_2$ (und damit auch das Produktma\ss{} $\mu_1\otimes\mu_2$) endlich sind.
+\begin{enumerate}[label=\Roman*.]
+    \item \textbf{$f$ Indikatorfunktion auf messbarem Rechteck, $f=\ind{A_1\times A_2}$ mit $A_1\times A_2\in\cR$}\newline
+    Hier gilt $f_{\omega_1}(\omega_2)=\ind{A_1}(\omega_1)\cdot\ind{A_2}(\omega_2)$ und damit 
+    $$s_1(\omega_1)=\ind{A_1}(\omega_1)\int_{\Omega_2}\ind{A_2}\ d\mu_2=\ind{A_1}(\omega_1)\cdot\mu_2(A_2)\geq0$$
+    und als einfache Funktion auf einer $\A_1$-messbaren Menge auch $\A_1\textendash\mathcal{B}(\overline\R)$-messbar. Au\ss{}erdem gilt
+    \begin{align*}
+        \int s_1\ d\mu_1&=\int\ind{A_1}\mu_2(A_2)\ d\mu_1=\mu_1(A_1)\cdot\mu_2(A_2)\\
+        &=(\mu_1\otimes\mu_2)(A_1\times A_2)=\int\ind{A_1\times A_2}\ d(\mu_1\otimes\mu_")
+    \end{align*}
+    \item \textbf{$f$ Indikatorfunktion auf endl. Vereinigung messbarer Rechtecke, $f=\ind{A}$ mit $A\in\cR^*$}\newline
+    Hier gilt $f_{\omega_1}(\omega_2)=(\ind{A})_{\omega_1}(\omega_2)=\ind{A_{\omega_1}}(\omega_2)$ und da $A_{\omega_1}\in\A_2$, ist $f_{\omega_1}$ $\A_2\textendash\mathcal{B}(\overline\R)$-messbar. Es gilt
+    $$s_1(\omega_1)=\int\ind{A_{\omega_1}}\ d\mu_2=\mu_2(A_{\omega_1})\geq0$$
+    Zeige nun die Messbarkeit von $s_1$: Definiere dazu
+    $$\mathcal{L}:=\left\{A\in\A_1\otimes\A_2:s_1(\cdot)=\int\ind{A}(\cdot,\omega_2)\ d\mu_2(\omega_2) \text{ ist }A_1\textendash\mathcal{B}(\overline\R)\text{-messbar}\right\}$$
+    und zeige $\mathcal{L}=\A_1\otimes\A_2$. Es gilt nat\"urlich $\cR\subseteq\mathcal{L}\subseteq\A_1\otimes\A_2=\sigma(\cR)$
+    wobei die erste Inklusion mit dem I. Fall und die zweite Inklusion laut Konstruktion gilt. Wir wissen, dass $\cR$ ein $\pi$-System ist. Mit dem $\lambda\textendash\pi$-Theorem gen\"ugt es also zu zeigen, dass $\mathcal{L}$ ein $\lambda$-System ist (einfache \"Uberlegung). Es gilt also zu zeigen
+    \begin{itemize}
+        \item $\Omega_1\times\Omega_2\in\mathcal{L}$: Gilt, da $\Omega_1\times\Omega_2\in\cR\subseteq\mathcal{L}$.
+        \item $A,B\in\mathcal{L},A\subseteq B\implies B\setminus A\in\mathcal{L}$: Hier gilt $\ind{B\setminus A}=\ind{B}-\ind{A}$, sodass
+        $$\int\ind{B\setminus A}\ d\mu_2=\int\ind{B}\ d\mu_2-\int\ind{A}\ d\mu_2$$
+        als Differenz zweier messbarer Funktionen (da $A,B\in\mathcal{L}$) wieder messbar ist.
+        \item $A_1\subseteq A_2\subseteq\hdots,A_i\in\mathcal{L},\forall i\geq1\implies\bigcup_{i\geq1}A_i\in\mathcal{L}$: Setze $A:=\bigcup_{i\geq1}A_i$, sodass $0\leq\ind{A_i}\nearrow\ind{A}$ punktweise. Damit gilt
+        $$\forall\omega_1\in\Omega_1,\forall\omega_2\in\Omega_2:0\leq(\ind{A_i})_{\omega_1}(\omega_2)\nearrow(\ind{A})_{\omega_1}(\omega_2)$$
+        und mit MONK folgt
+        $$\forall\omega_1\in\Omega_1:\int(\ind{A})_{\omega_1}\ d\mu_2=\lim_{i\to\infty}\int(\ind{A_i})_{\omega_1}\ d\mu_2$$
+        Das Integral ist als Grenzwert messbarer Funktionen damit messbar (da der Grenzwert laut MONK auch existiert).
+    \end{itemize} 
+    Damit ist $\mathcal{L}$ ein $\lambda$-System. Zeige nun $\int \ind{A}\ d(\mu_1\otimes\mu_2)=\int s_1\ d\mu_1$: Es gilt 
+    $$\int\ind{A}\ d(\mu_1\otimes\mu_2)=(\mu_1\otimes\mu_2)(A)$$
+    Definiere
+    $$\nu(A):=\int\left(\int\ind{A}(\cdot,\omega_2)\ d\mu_2(\omega_2)\right)d \mu_1(\omega_1)$$
+    Wegen dem I. Fall wissen wir, dass $\nu(R)=(\mu_1\otimes\mu_2)(R)$ f\"ur $R\in\cR$ gilt. Falls $\nu$ ein Ma\ss{} auf $\sigma(\cR)=\A_1\otimes\A_2$ ist, folgt mit Korollar 2.8, dass $\nu$ und $(\mu_1\otimes\mu_2)$ auf $\A_1\otimes\A_2\supseteq\cR^*$ \"ubereinstimmen und damit die Aussage. $\nu(\emptyset)$ und $\nu\geq0$ ergeben sich sofort aus den Eigenschaften vom Lebesgue-Integral. Zeige also die $\sigma$-Additivit\"at:\newline
+    Seien $A_i\in\A,i\geq1$ disjunkt und definiere $B_n:=\bigcup_{i=1}^nA_i$, $B:=\bigcup_{i\geq1}A_i$. Dann gilt
+    $B_1\subseteq B_2\subseteq\hdots\subseteq B$ und damit $0\leq\ind{B_n}\nearrow \ind{B}$. Folglich gilt auch $\forall\omega_1\in\Omega_1:0\leq(\ind{B_n})_{\omega_1}\nearrow (\ind{B})_{\omega_1}$. Mit MONK folgt
+    $$\forall\omega_1\in\Omega_1:0\leq\int(\ind{B_n})_{\omega_1}\ d\mu_2\nto{}{n\to\infty}\int(\ind{B})_{\omega_1}\ d\mu_2$$
+    und (nochmal MONK)
+    $$0\leq\int_{\Omega_1}\left(\int_{\Omega_2}(\ind{B_n})_{\omega_1}\ d\mu_2\right)\ d\mu_1\nto{}{n\to\infty}\int_{\Omega_1}\left(\int_{\Omega_2}(\ind{B})_{\omega_1}\ d\mu_2\right)\ d\mu_1$$
+    Also gilt
+    \begin{align*}
+        \nu(B)&=\nu\left(\bigcup_{i\geq1}A_i\right)=\lim_{n\to\infty}\nu(B_n)=\lim_{n\to\infty}\nu\left(\bigcup_{i=1}^nA_i\right)\\
+        &=\lim_{n\to\infty}\int_{\Omega_1}\left(\int_{\Omega_2}\ind{\bigcup_{i=1}^nA_i}\ d\mu_2\right)\ d\mu_1\\
+        &=\lim_{n\to\infty}\int_{\Omega_1}\left(\int_{\Omega_2}\sum_{i=1}^n\ind{A_i}\ d\mu_2\right)\ d\mu_1\\
+        &=\lim_{n\to\infty}\sum_{i=1}^n\int_{\Omega_1}\left(\int_{\Omega_2}\ind{A_i}\ d\mu_2\right)\ d\mu_1\\
+        &=\sum_{i\geq1}\int_{\Omega_1}\left(\int_{\Omega_2}\ind{A_i}\ d\mu_2\right)\ d\mu_1=\sum_{i\geq1}\nu(A_i)
+    \end{align*}
+    wobei die inneren Integrale jeweils \"uber den $\omega_1$-Schnitt der jeweiligen Funktionen zu verstehen sind.
+    \item \textbf{$f$ einfache Funktion, $f=\sum_{i=1}^n\alpha_i\cdot\ind{A_i}$ mit $A_i\in\A_1\otimes\A_2$ disjunkt}\newline
+    $$s_1(\omega_1)=\int f_{\omega_1}\ d\mu_2=\int\left(\sum_{i=1}^n\alpha_i\cdot\ind{A_i}\right)_{\omega_1}\ d\mu_2=\sum_{i=1}^n\alpha_i\cdot\int\ind{A_i}\ d\mu_2\geq0$$
+    und $s_1$ ist als Linearkombination messbarer Funktionen wieder messbar. Weiters gilt
+    \begin{align*}
+        \int f \ d(\mu_1\otimes\mu_2)&=\int\sum_{i=1}^n\alpha_i\cdot\ind{A_i}\ d(\mu_1\otimes\mu_2)\\
+        &=\sum_{i=1}^n\alpha_i\cdot\int\ind{A_i}\ d(\mu_1\otimes\mu_2)\\
+        &=\sum_{i=1}^n\alpha_i\cdot(\mu_1\otimes\mu_2)(A_i)\\
+        &=\sum_{i=1}^n\alpha_i\cdot\nu(A_i)\\
+        &=\sum_{i=1}^n\alpha_i\cdot\int_{\Omega_1}\left(\int_{\Omega_2}\ind{A_i}\ d\mu_2\right)\ d\mu_1\\
+    &=\int_{\Omega_1}\left(\int_{\Omega_2}\sum_{i=1}^n\alpha_i\cdot\ind{A_i}\ d\mu_2\right)\ d\mu_1\\
+        &=\int_{\Omega_1}\left(\int_{\Omega_2}f\ d\mu_2\right)\ d\mu_1
+    \end{align*}
+    \item \textbf{$f$ nicht-negativ, messbar}\newline
+    W\"ahle eine Folge einfacher Funktionen $f_n,n\geq1$, sodass $0\leq f_n\nearrow f$. Seien die $f_n$ o.B.d.A. wie im III. Fall. Dann gilt $\forall\omega_1\in\Omega_1:0\leq(f_n)_{\omega_1}\nearrow f_{\omega_1}$ und mit MONK folgt
+    $$\forall\omega_1\in\Omega_1:0\leq\int_{\Omega_2}(f_n)_{\omega_1}\ d\mu_2\nto{}{n\to\infty}\int_{\Omega_2}f_{\omega_1}\ d\mu_2$$
+    wobei die Integrale der $f_n$ mit dem III. Fall messbar sind und der Grenzwert damit auch. Weiters gilt
+    \begin{align*}
+        \int f\ d(\mu_1\otimes\mu_2)&\overset{\text{Def.}}{=}\lim_{n\to\infty}\int f_n\ d(\mu_1\otimes\mu_2)\\
+        &\overset{\text{III.}}{=}\lim_{n\to\infty}\int_{\Omega_1}\left(\int_{\Omega_2}f_n\ d\mu_2\right)\ d\mu_1\\
+        &\overset{\text{MONK}}{=}\int_{\Omega_1}\left(\int_{\Omega_2}f\ d\mu_2\right)\ d\mu_1=\int_{\Omega_1}s_1\ d\mu_1
+    \end{align*}
+\end{enumerate}
+    Betrachte nun den allgemeinen Fall, wo $\mu_1$ und $\mu_2$ beide $\sigma$-endlich sind.\newline
+    F\"ur $i=1,2$ gibt es Mengenfolgen $B_{i,n}\in\A_i,n\geq1$, sodass $B_{i,1}\subseteq B_{i,2}\subseteq\hdots\subseteq\bigcup_{n\geq1}B_{i,n}$ und $\forall n\geq1:\mu_i(B_{i,n})<\infty$. F\"ur $B_n:=B_{1,n}\times B_{2,n}\in\A_1\otimes\A_2$ ist $\Omega_1\times\Omega_2=\bigcup_{n\geq1}B_n$ und $\forall n\geq1:(\mu_1\otimes\mu_2)(B_n)=\mu_1(B_{1,n})\cdot\mu_2(B_{2,n})<\infty$. Damit ist auch $\mu_1\otimes\mu_2$ ein $\sigma$-endliches Ma\ss{}. Definiere nun f\"ur $n\geq1$ die folgenden Ma\ss{}e f\"ur messbare Mengen $A$:
+    \begin{align*}
+        \mu_{1,n}(A)&:=\mu_1(A\cap B_{1,n}) \\
+        \mu_{2,n}(A)&:=\mu_2(A\cap B_{2,n}) \\
+        \pi_n(A)&:=(\mu_1\otimes\mu_2)(A\cap B_n)
+    \end{align*}
+    Dann gelten folgende Eigenschaften (leicht zu pr\"ufen):
+    \begin{itemize}
+        \item $\mu_{2,n}$, $\mu_{1,n}$ und $\pi_n$ sind endliche Ma\ss{}e f\"ur alle $n\geq1$.
+        \item $\pi_n=\mu_{1,n}\otimes\mu_{2,n}$
+        \item Es gilt f\"ur $i=1,2$, dass 
+        \begin{equation*}
+            \int_{\Omega_i}f\ d\mu_{i,n}=\int_{\Omega_i}f\cdot\ind{B_{i,n}}\ d\mu_i
+        \end{equation*}
+        f\"ur $f:\Omega_i\to\overline\R$ nicht-negativ und messbar und
+        \begin{equation*}
+            \int f\ d\pi_n=\int f\cdot\ind{B_n}\ d(\mu_1\otimes\mu_2)
+        \end{equation*}
+        f\"ur $f:\Omega_1\times\Omega_2\to\overline\R$ nicht-negativ und messbar
+        \item Der Satz von Tonelli gilt f\"ur $\mu_{1,n}$ und $\mu_{2,n}$ wie bereits bewiesen.
+    \end{itemize}
+    Sei also $f:\Omega_1\times\Omega_2\to\overline\R$ nicht-negativ und messbar. Dann gilt $0\leq f\cdot\ind{B_n}\nearrow f$ und $\forall\omega_1\in\Omega_1:0\leq(f\cdot\ind{B_n})_{\omega_1}\nearrow f_{\omega_1}$. Mit MONK folgt also
+    \begin{align*}
+        s_1(\omega_1)&=\int_{\Omega_2}f_{\omega_1}\ d\mu_2=\lim_{n\to\infty}\int_{\Omega_2}(f\cdot\ind{B_n})_{\omega_1}\ d\mu_2\\
+        &=\begin{cases}
+            \displaystyle\lim_{n\to\infty}\int_{\Omega_2}f_{\omega_1}\ d\mu_{2,n}&\text{ falls }\omega_1\in B_{1,n}\\
+            0&\text{ falls }\omega_1\notin B_{1,n}
+        \end{cases}
+        \\ &=\ind{B_{1,n}}(\omega_1)\int_{\Omega_2}f_{\omega_1}\ d\mu_{2,n}\geq0
+    \end{align*}
+    und messbar (IV. Fall und Produkt mit Indikatorfunktion auf messbarer Menge). Weiters gilt
+    \begin{align*}
+        \int f\ d(\mu_1\otimes\mu_2)&=\lim_{n\to\infty}\int\ind{B_n}\cdot f\ d(\mu_1\otimes\mu_2)\\
+        &\overset{\text{s.o.}}{=}\lim_{n\to\infty}\int f\ d\pi_n\\
+        &=\lim_{n\to\infty}\int f\ d(\mu_{1,n}\otimes\mu_{2,n})\\
+        &\overset{\text{IV.}}{=}\lim_{n\to\infty}\int_{\Omega_1}\left(\int_{\Omega_2} f_{\omega_1}\ d\mu_{2,n}\right)\ d\mu_{1,n}\\
+        &\overset{\text{s.o.}}{=}\lim_{n\to\infty}\int_{\Omega_1}\left(\ind{B_{1,n}}\int_{\Omega_2}f_{\omega_1}\cdot\ind{B_{2,n}}\ d\mu_2\right)\ d\mu_1 \\
+        &\overset{\text{2x MONK}}{=}\int_{\Omega_1}\left(\int_{\Omega_2}f_{\omega_1}\ d\mu_2\right)\ d\mu_1=\int_{\Omega_1}s_1\ d\mu_1
+    \end{align*}
+    wobei der vorletzte Schritt mit den nicht-negativen monotonen Folgen $\left(f_{\omega_1}\cdot\ind{B_{2,n}}\right),n\geq1$ und 
+    $\left(\ind{B_{1,n}}\cdot\int_{\Omega_2}f_{\omega_1}\ind{B_{2,n}}\ d\mu_2\right),n\geq1$
+    und MONK folgt. \qed
+    
+\paragraph{8.12. Satz (Fubini's Theorem):}Sei $f:\Omega_1\times\Omega_2\to\overline\R$ absolut $\mu_1\otimes\mu_2$-integrierbar. Dann gibt es eine messbare Menge $N_1\in\A_1$ mit folgenden Eigenschaften
+\begin{enumerate}[label=(\roman*)]
+    \item $\mu_1(N_1)=0$ und $\forall\omega_1\notin N_1:f_{\omega_1}\in L_1(\mu_2)$
+    \item Die Abbildung $s_1:\Omega_1\to\overline\R$ mit
+    \begin{align*}
+        s_1(\omega_1):=
+    \begin{cases}
+       \displaystyle \int_{\Omega_2} f_{\omega_1}\ d\mu_2&\text{ falls }\omega_1\notin N_1 \\
+       0&\text{ falls }\omega_1\in N_1
+    \end{cases}
+    \end{align*}
+    ist absolut $\mu_1$-integrierbar.
+    \item $$\int f\ d(\mu_1\otimes\mu_2)=\int_{\Omega_1}s_1\ d\mu_1$$
+\end{enumerate}
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=(\roman*)]
+    \item $|f|$ ist nicht-negativ und messbar. Laut Annahme und mit Tonelli (Satz 8.11) gilt
+    $$\int_{\Omega_1}\left(\int_{\Omega_2}|f|\ d\mu_2\right)\ d\mu_1=\int |f|\ d(\mu_1\otimes\mu_2)<\infty$$
+    wobei das innere Integral auf der linken Seite f\"ur alle $\omega_a\in\Omega_1$ eine nicht-negative Funktion mit endlichem $\mu_1$-Integral ist und damit $<\infty$ f.\"u. ist. Definiere also
+    $$N_1:=\left\{\omega_1\in\Omega_1:\int_{\Omega_2}|f|_{\omega_1}\ d\mu_2=\infty\right\}$$
+    Dann gilt wegen der Messbarkeit von $s_1$ laut Tonelli $N_1\in\A_1$ und trivial die gesuchten Eigenschaften (da $|f_{\omega_1}|=|f|_{\omega_1}$).
+    \item Schreibe $f=f_+-f_-$ und wende jeweils Tonelli auf den Positiv- und Negativteil an. Schreibe
+    \begin{align*}
+        s_1(\omega_1)=
+        \begin{cases}
+            \displaystyle\int_{\Omega_2}(f_{\omega_1})_+\ d\mu_2-\int_{\Omega_2}(f_{\omega_1})_-\ d\mu_2&\text{ falls }\omega_1\notin N_1 \\
+            0&\text{ falls }\omega_1\in N_1
+        \end{cases}\\
+        =\begin{cases}
+            \displaystyle\int_{\Omega_2}(f_+)_{\omega_1}\ d\mu_2-\int_{\Omega_2}(f_-)_{\omega_1}\ d\mu_2&\text{ falls }\omega_1\notin N_1 \\
+            0&\text{ falls }\omega_1\in N_1
+        \end{cases}
+    \end{align*}
+    Damit ist $s_1$ als Produkt und Summe messbarer Funktionen und mit Tonelli messbar. Weiters gilt
+    \begin{align*}
+        \int_{\Omega_1}|s_1|\ d\mu_1&=\int_{\Omega_1}\ind{N_1^c}\left|\int_{\Omega_2}(f_{\omega_1})_+\ d\mu_2-\int_{\Omega_2}(f_{\omega_1})_-\ d\mu_2\right|\ d\mu_1\\
+        &\overset{\text{DUG}}{\leq}\int_{\Omega_1}\ind{N_1^c}\left(\left|\int_{\Omega_2}(f_{\omega_1})_+\ d\mu_2\right|+\left|\int_{\Omega_2}(f_{\omega_1})_-\ d\mu_2\right|\right)\ d\mu_1\\
+        &=\int_{\Omega_1}\ind{N_1^c}\int_{\Omega_2}(f_{\omega_1})_+\ d\mu_2\ d\mu_1+\int_{\Omega_1}\ind{N_1^c}\int_{\Omega_2}(f_{\omega_1})_-  \ d\mu_2\ d\mu_1\\
+        &\leq\int_{\Omega_1}\int_{\Omega_2}(f_{\omega_1})_+\ d\mu_2\ d\mu_1+\int_{\Omega_1}\int_{\Omega_2}(f_{\omega_1})_-  \ d\mu_2\ d\mu_1\\
+        &\overset{\text{Tonelli}}{=}\int f_+\ d(\mu_1\otimes\mu_2)+\int f_-\ d(\mu_1\otimes\mu_2)\\&=\int f\ d(\mu_1\otimes\mu_2)<\infty
+    \end{align*}
+    Damit ist $s_1$ absolut $\mu_1$-integrierbar.
+    \item Mit Tonelli f\"ur $f_+$ und $f_-$ gilt
+    \begin{align*}
+        \int_{\Omega_1}\ d\mu_1&    \overset{\text{Def.}}{=}\int_{\Omega_1}\ind{N_1^c}\left(\int_{\Omega_2}f_{\omega_1}\ d\mu_2\right)\ d\mu_1\\
+        &=\int_{\Omega_1}\ind{N_1^c}\left(\int_{\Omega_2}(f_+)_{\omega_1}\ d\mu_2\right)\ d\mu_1-\int_{\Omega_1}\ind{N_1^c}\left(\int_{\Omega_2}(f_-)_{\omega_1}\ d\mu_2\right)\ d\mu_1\\
+        &=\int_{\Omega_1}\left(\int_{\Omega_2}(f_+)_{\omega_1}\ d\mu_2\right)\ d\mu_1-\int_{\Omega_1}\left(\int_{\Omega_2}(f_-)_{\omega_1}\ d\mu_2\right)\ d\mu_1\\
+        &\overset{\text{Tonelli}}{=}\int f_+\ d(\mu_1\otimes\mu_2)-\int f_-\ d(\mu_1\otimes\mu_2)=\int f\ d(\mu_1\otimes\mu_2)
+    \end{align*}
+    wobei der vorletzte Schritt aus $\mu_1(N_1)=0$ und $f\overset{a.e.}{=}g\implies\int f\ d\mu=\int g\ d\mu$ folgt. \qed.
+\end{enumerate}
+
+% Hier bin ich mir nicht sicher ob f \"uberhaupt zwingend messbar ist.
+\paragraph{8.13. Beispiel:}Betrachte unabh\"angige Zufallsvariablen $X,Y:\Omega\to\mathbb{N}$ mit gemeinsamer pmf $p_{X,Y}(x,y)=\Pp(X=x,Y=y)$, marginal pmfs $p_X=\Pp(X=x)$, $p_Y(y)=\Pp(Y=y)$ und eine messbare Funktion $f:\mathbb{N}\times\mathbb{N}\to\mathbb{Q}$ mit 
+$$(x,y)\mapsto\dfrac{1}{p_{X,Y}(x,y)}\dfrac{(-1)^{x+1}}{x+y}=\dfrac{1}{p_X(x)\cdot p_Y(y)}\dfrac{(-1)^{x+1}}{x+y}$$
+Gesucht ist $\E f(X,Y)$. Betrachte dazu folgende Tabelle\newline
+\begin{center}
+\begin{tabular}{l|lllll|l}
+$\downarrow$ y / x $\rightarrow$ & 1 & 2 & 3 & 4 & $\hdots$ & Summe \\
+\hline
+1   & 1/2  & -1/3  & 1/4  & -1/5  &  $\hdots$  &  $1-\log 2=:c$   \\
+2   &  1/3 & -1/4  & 1/5  & -1/6  &  $\hdots$   &  $-c+1/2$   \\
+3   &  1/4 & -1/5  & 1/6  & -1/7  &  $\hdots$   & $c-1/2+1/3$    \\
+4   &  1/5 &  -1/6 & 1/7  &  -1/8 &  $\hdots$   &  $c+1/2-1/3+1/4$   \\
+$\vdots$ &  $\vdots$  & $\vdots$   &  $\vdots$  & $\vdots$   &  $\ddots$   &  $\vdots$    \\
+\hline
+Summe &  $+\infty$ & $-\infty$  & $+\infty$  & $-\infty$  &  $\hdots$   &    
+\end{tabular}
+\end{center}
+Damit gelten folgende Eigenschaften
+\begin{enumerate}[label=(\roman*)]
+    \item $\displaystyle\sum_{x\geq1}\sum_{y\geq1}f(x,y)\cdot p_{X,Y}(x,y)=\sum_{x\geq1}(\infty-\infty+\infty-\hdots)$ existiert nicht!
+    \item $\displaystyle\sum_{y\geq1}\sum_{x\geq1}f(x,y)\cdot p_{X,Y}(x,y)=\sum_{y\geq1}\left(\lim_{n\to\infty}\begin{aligned}\begin{cases}
+        1/2+1/4+\hdots+1/n&\text{ falls }n\text{ gerade}\\
+        c+1/3+1/5+\hdots+1/n&\text{ falls }n\text{ ungerade}
+    \end{cases}\end{aligned}\right)=\infty$
+\end{enumerate}
+Mit dem Kontrapositiv von Fubini (Satz 8.12) gilt also $\E|f(X,Y)|=\infty$.
+
+\section*{Messbarkeit $\mathbb{R}^d$-wertiger Funktionen}
+\addcontentsline{toc}{section}{Messbarkeit $\mathbb{R}^d$-wertiger Funktionen}
+Betrachte in diesem Abschnitt $\R^d$-wertige Abbildungen (statt $\overline\R^d$, der Einfachheit wegen) und die euklidische Norm $\Vert x\Vert_2=\left(\sum_{i=1}^dx_i^2\right)^{1/2}$ f\"ur $x\in\R^d,x=(x_1,\hdots,x_d)'$.
+
+% Ich habe Definition 8.20/21? gleich hier angeh\"angt
+\paragraph{8.14. Definition:}
+\begin{enumerate}[label=(\roman*)]
+    \item Sei $\mathcal{O}_d:=\left\{O\subseteq\R^d:O \text{ offen}\right\}$ die Familie aller offenen Mengen in $\R^d$. Die Borel-$\sigma$-Algebra auf $\R^d$ ist definiert als
+    $$\mathcal{B}(\R^d):=\sigma(\mathcal{O}_d)$$
+    \item Ist $\pspace$ ein Wahrscheinlichkeitsraum und $X:(\Omega,\A)\to(\R^d,\mathcal{B}(\R^d))$ messbar, dann nennt man $X$ einen $d$-dimensionalen Zufallsvektor. Man nennt die Funktion $F:\R^d\to[0,1]$ mit $t\to\Pp(X\leq t)$ (komponentenweise) die Verteilungsfunktion (cdf) von $X$.
+ \end{enumerate}
+ 
+ % Ich habe die Reihenfolge von 8.15 und 8.16 vertauscht, da das so mehr Sinn macht.
+ \paragraph{8.15. Lemma}Betrachte $(\R^d,\Vert\cdot\Vert_2)$ als metrischen Raum bzw. normierten Vektorraum. Dann gilt
+ $$f:\R^d\to\R^\ell\text{ stetig }\iff\forall O\in\mathcal{O}_\ell: f^{-1}(O)\in\mathcal{O}_d$$
+ also ist $f$ genau dann stetig, wenn Urbilder offener Mengen unter $f$ immer offen sind. Die Stetigkeit ist hier im Sinn des metrischen Raumes zu verstehen (also "$\epsilon$-$\delta$-Stetigkeit").
+ 
+ \paragraph{Beweis:}\"Ubung! (cf. H\"ohere Analysis) \qed
+ 
+ \paragraph{8.16. Proposition:} Sei $f:(\R^d,\mathcal{B}(\R^d))\to(\R^\ell,\mathcal{B}(\R^\ell))$ stetig. Dann ist $f$ auch messbar. 
+ 
+\paragraph{Beweis:} Mit Lemma 8.15 folgt unmittelbar die Messbarkeit im Erzeugendensystem und damit auch die Messbarkeit in $\mathcal{B}(\R^d)$. \qed
+
+\paragraph{8.17. Proposition:}
+$$\mathcal{B}(\R^d)=\bigotimes_{i=1}^d\borel$$
+
+\paragraph{Bemerkung:}Allgemeiner gilt 
+$$\mathcal{B}(X^d)=\bigotimes_{i=1}^d\mathcal{B}(X)$$
+f\"ur alle separablen Mengen $X$.
+
+\paragraph{Beweis:}fehlt noch! \qed % Der Beweis in den Notizen ist falsch!
+
+\paragraph{8.18 Korollar:}Betrachte folgende Mengenfamilien
+\begin{align*}
+    &\mathcal{J}_1:=\left\{(-\infty,t_1]\times\hdots\times(-\infty,t_d]:t\in\R^d\right\} \\
+    &\mathcal{J}_2:=\left\{(s_1,t_1)\times\hdots\times(s_d,t_d):s,t\in\R^d\right\} \\
+    &\mathcal{J}_3:=\left\{(s_1,t_1\rangle\times\hdots\times(s_d,t_d\rangle:s,t\in\overline\R^d,s_i\leq t_i\text{ f\"ur }i=1,\hdots,d\right\} \\
+\end{align*}
+Dann gilt $\sigma(\mathcal{J}_1)=\sigma(\mathcal{J}_2)=\sigma(\mathcal{J}_3)=\mathcal{B}(\R^k)$
+
+\paragraph{Beweis:}\"Ubung! Hinweis: Mit $\borel=\sigma(\mathcal{O}_1)$ und $\R=\bigcup_{k\geq1}(-k,k)$, wobei $(-k,k)\in\mathcal{O}_1$ gilt f\"ur $\mathcal{M}:=\left\{A_1\times\hdots\times A_n:A_i\in\mathcal{O}_1\text{ f\"ur }i=1,\hdots,d\right\}$, dass $\sigma(\mathcal{M})=\bigotimes_{i=1}^d\sigma(\mathcal{O}_1)=\bigotimes_{i=1}^d\borel$. \qed
+
+\paragraph{8.19. Korollar:}Sei $(\Omega,\A)$ ein messbarer Raum und $f:\Omega\to\R^d,\omega\mapsto(f_1(\omega),\hdots,f_d(\omega))'$ mit $f_i:\Omega\to\R$. Dann ist $f$ genau dann $\A\textendash\mathcal{B}(\R^d)$-messbar, wenn die Koordinatenfunktionen $f_i$ f\"ur $i=1,\hdots,d$ jeweils $\A\textendash\borel$-messbar sind.
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*.]
+    \item $\implies$\newline
+    Die Koordinatenprojektionen $\pi_i:\R^d\to\R$ sind stetig und damit $\mathcal{B}(\R^d)\textendash\borel$-messbar. Damit ist $f_i=(\pi_i\circ f)$ auch messbar.
+    \item $\impliedby$\newline
+    Mit Korollar 8.18 gen\"ugt es die Messbarkeit f\"ur Urbilder unter $f$ aus $\mathcal{J_1}$ zu zeigen. Es gilt
+    $$f^{-1}((-\infty,t_1]\times\hdots\times(-\infty,t_d])=\bigcap_{i=1}^d\{f_i\leq t_i\}\in\A$$
+    da ein endlicher Durchschnitt messbarer Mengen wieder messbar ist. \qed
+\end{enumerate}
+
+\paragraph{8.20. Korollar:}Sei $(\Omega,\A)$ ein messbarer Raum und seien $f,g:(\Omega,\A)\to(\R^d,\mathcal{B}(\R^d))$ und $h:\Omega\to\R$ messbar. Sei weiters $M\in\R^{\ell\times d}$ eine deterministische Matrix. Dann gilt
+\begin{enumerate}[label=(\roman*)]
+    \item $f+g$ ist $\A\textendash\mathcal{B}(\R^d)$-messbar.
+    \item $\langle f,g\rangle=\displaystyle\sum_{i=1}^d f_i g_i$ ist $\A\textendash\borel$-messbar.
+    \item $Mf$ ist $\A\textendash\mathcal{B}(\R^\ell)$-messbar.
+    \item $hf$ ist $\A\textendash\mathcal{B}(\R^d)$-messbar.
+\end{enumerate}
+
+\paragraph{Beweis:}Folgt aus der Messbarkeit der Komponentenfunktionen und der Messbarkeit von Summen und Produkten messbarer Funktionen. \qed
+
+\paragraph{8.21. Proposition:}Die Verteilungsfunktion  $F:\R^d\to[0,1]$ einer Zufallsvariable $X:(\Omega,\A)\to(\R^d,\mathcal{B}(\R^d))$ hat folgende Eigenschaften:
+\begin{enumerate}[label=(\roman*)]
+    \item F\"ur eine Folge $t_n=(t_n^{(1)},\hdots,t_n^{(d)})'\in\R^d,n\geq1$ mit $\displaystyle\min_{1\leq i\leq d}t_n^{(i)}\searrow-\infty$ gilt $\displaystyle\lim_{n\to\infty}F(t_n)=0$
+    und f\"ur eine Folge $s_n=(s_n^{(1)},\hdots,s_n^{(d)})'\in\R^d,n\geq1$ mit $\displaystyle\min_{1\leq i\leq d}s_n^{(i)}\nearrow\infty$ gilt $\displaystyle\lim_{n\to\infty}F(s_n)=1$.
+    \item F\"ur $t_n\in\R^d,n\geq1$ mit $t_n\searrow t_0$ komponentenweise gilt $\displaystyle\lim_{n\to\infty}F(t_n)=F(t_0)$. \textbf{(Rechtsstetigkeit)}
+    \item F\"ur $t_n\in\R^d,n\geq1$ mit $t_n\nearrow t_0$ komponentenweise existiert $\displaystyle\lim_{n\to\infty}F(t_n)$.
+    \item F\"ur $s,t\in\R^d$ mit $s\leq d$ komponentenweise gilt
+    $$0\leq\sum_{k=0}^d(-1)^k\sum_{x\in I_k}F(x)$$
+    wobei $I_k=\displaystyle\left\{x\in\R^d:\sum_{i=1}^d\delta_{x_i,s_i}=k,\sum_{i=1}^d\delta_{x_i,t_i}=d-k\right\}$, also die Menge der der $x$, sodass $x$ in $k$ Komponenten mit $s$ \"ubereinstimmt und in den restlichen Komponenten mit $t$ \"ubereinstimmt.
+\end{enumerate}
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=(\roman*)]
+    \item Sei $m_n:=\displaystyle\min_{1\leq i\leq d}t_n^{(i)}$ und sei $i_n$ so, dass $m_n=t_n^{(i_n)}$ (also, dass das Minimum in der $i_n$-ten Koordinate angenommen wird). 
+    \begin{itemize}
+        \item Falls $m_n\searrow-\infty$
+        \begin{align*}
+            F(t_n)&=\Pp(X_1\leq t_n^{(1)},\hdots,X_d\leq t_n^{(d)})\\
+            &\leq\Pp(X_{i_n}\leq m_n)\\
+            &\leq\sum_{i=1}^d\Pp(X_i\leq m_n)\nto{}{n\to\infty}0
+        \end{align*}
+        \item Falls $m_n\nearrow\infty$
+        \begin{align*}
+            F(t_n)&=\Pp(X_1\leq t_n^{(1)},\hdots,X_d\leq t_n^{(d)})\\
+            &\geq\Pp(X_1\leq m_n,\hdots,X_d\leq m_n)\nto{\text{S.V.U.}}{n\to\infty}\Pp(X\in\R^d)=1
+        \end{align*}
+        wobei die Stetigkeit von unten mit den Mengen $(-\infty,t_n^{(i)}]\supseteq(-\infty,m_n],i=1,\hdots,d$ gilt. 
+    \end{itemize}
+    \item Setze $A_n:=\{X\leq t_n\}$. Dann gilt $A_1\supseteq A_2\supseteq\hdots\supseteq\bigcap_{n\geq1}A_n$. Mit der Stetigkeit von oben folgt $\Pp(A)=\lim_{n\to\infty}\Pp(A_n)$ und damit $F(t_0)=\lim_{n\to\infty}F(t_n)$.
+    \item F\"ur $A_n$ wie in (ii) gilt hier $A_1\subseteq A_2\subseteq\hdots\subseteq\bigcup_{n\geq1}A_n=:A$. Mit der Stetigkeit von unten folgt $\lim_{n\to\infty}F(t_n)=\Pp(A)\in[0,1]$, sodass der Grenzwert exisitiert. 
+    \item Es gilt
+    \begin{align*}
+        0&\leq\Pp(X\in(s_1,t_1]\times\hdots\times(s_d,t_d])\\
+        &=\Pp(\{X\leq t\}\setminus\{\exists i\leq d: X_i\leq s_i\})\\
+        &=\Pp(\{X\leq t\}\setminus\{\forall i\leq d:X_i\leq t_i,\exists i\leq d: X_i\leq s_i\})=:(*)
+    \end{align*}
+    Setze $A_j:=\{X\leq t,X_j\leq s_j\}$ f\"ur $j=1,\hdots,d$. Dann gilt
+    \begin{align*}
+        (*)&=F(t)-\Pp\left(\bigcup_{j=1}^d A_j\right)\overset{\text{In-Ex}}{=}F(t)+\sum_{\ell=1}^d(-1)^\ell\sum_{\substack{I\subseteq\{1,\hdots,d\}\\|I|=\ell}}\Pp\left(\bigcap_{j\in I}A_j\right)\\
+        &=F(t)+\sum_{\ell=1}^d(-1)^\ell\sum_{x\in I_k}F(x)=\sum_{\ell=0}^d(-1)^\ell\sum_{x\in I_k}F(x)
+    \end{align*}
+    \qed
+\end{enumerate}
+
+\paragraph{8.22. Proposition:}Sei $F:\R^d\to[0,1]$ eine Funktion mit den Eigenschaften (i)-(iv) aus Proposition 8.21. Dann gibt es einen Wahrscheinlichkeitsraum $\pspace$ und einen Zufallsvektor $X:\Omega\to\R^d$, sodass $F$ die cf von $X$ ist.
+
+\paragraph{Beweis:}Nur Beweisidee: Konstruiere ein Wahrscheinlichkeitsma\ss{} $\Pp$ auf $(\R^d,\mathcal{B}(\R^d))$, sodass 
+$$\Pp((-\infty,t_1]\times\hdots\times(-\infty,t_d])=F(t)$$
+und setze $X(\omega):=\omega$ f\"ur $\omega\in\R^d$. \qed
+
+\paragraph{8.23. Definition:}Sei $(\Omega,\A,\mu)$ ein Ma\ss{}raum und $f:(\Omega,\A)\to(\R^d,\mathcal{B}(\R^d))$ messbar. Sind alle Komponentenfunktionen $f_i:(\Omega,\A)\to(\R,\borel),i=1,\hdots,d$ (quasi-)integrierbar, dann nennt man $f$ (quasi-)integrierbar und setzt
+$$\int f\ d\mu:=\left(\int f_1\ d\mu,\hdots,\int f_d\ d\mu\right)'$$
+
+% Hier habe ich die Reihenfolge ver\"andert, da sie so mehr Sinn macht.
+
+\paragraph{8.24. Definition:}Sei $V$ ein Vektorraum \"uber einen K\"orper $K$. Eine Abbildung $\Vert\cdot\Vert:V\to[0,\infty)$ ist eine Norm auf $V$, falls f\"ur $x,y\in V$ und $\lambda\in K$ gilt:
+\begin{itemize}
+    \item $\Vert x\Vert=0\iff x=0$
+    \item $\Vert\lambda x\Vert=|\lambda|\Vert x\Vert$
+    \item $\Vert x+y\Vert\leq\Vert x\Vert+\Vert y\Vert$
+\end{itemize}
+
+\paragraph{Bemerkung:}Eine Norm $\Vert\cdot\Vert$ erf\"ullt auch die umgekehrte Dreiecksungleichung
+$$\left|\Vert x\Vert-\Vert y\Vert\right|\leq\Vert x-y\Vert$$
+
+\paragraph{8.25. Lemma:}Alle Normen auf $\R^d$ sind \"aquivalent, i.e. f\"ur eine beliebige Norm $\Vert\cdot\Vert$ auf $\R^d$ gibt es Konstanten $\alpha,\beta>0$, sodass
+$$\forall x\in\R^d:\alpha\Vert x\Vert_\infty\leq\Vert x\Vert\leq\beta\Vert x\Vert_\infty$$
+f\"ur $\displaystyle\Vert x\Vert_\infty=\max_{1\leq i\leq d}x_i$. Insbesondere f\"uhren damit alle Normen auf $\R^d$ zu denselben offenen Mengen.
+
+\paragraph{Beweis:}Betrachte die kanonische Basis $\{e_1,\hdots,e_d\}$ und setze $\displaystyle\mu:=\max_{1\leq i\leq d}\Vert e_i\Vert$. Dann gilt
+$$\Vert x\Vert=\left\Vert\sum_{i=1}^d x_ie_i\right\Vert\leq\sum_{i=1}^d\Vert x_ie_i\Vert=\sum_{i=1}^d|x_i|\Vert e_i\Vert\leq\mu\sum_{i=1}^d|x_i|\leq k\mu\Vert x\Vert_\infty=:\beta\Vert x\Vert_\infty$$
+Damit ist die Abbildung $f:\R^d\to[0,\infty)$ mit $x\mapsto\Vert x\Vert$ stetig, denn
+$$\left|\Vert x\Vert-\Vert y\Vert\right|\leq\Vert x-y\Vert\leq\beta\Vert x-y\Vert_\infty$$ und f\"ur $\eps>0$, setze $\delta:=\eps/\beta$. Betrachte nun $S:=\left\{s\in\R^d:\Vert x\Vert_\infty=1\right\}$. Dann ist $S$ mit Heine\textendash Borel kompakt und f\"ur $f$ gilt der Extremwertsatz. Sei also $p\in\arg\min_{x\in S}\Vert x\Vert$. Dann gilt $\Vert p\Vert \neq0$ und f\"ur alle $x\neq0$ gilt
+$$\Vert x\Vert=\left\Vert\ \Vert x\Vert_\infty\cdot\dfrac{x}{\Vert x\Vert_\infty} \right\Vert=\Vert x\Vert_\infty\left\Vert\ \cdot\dfrac{x}{\Vert x\Vert_\infty} \right\Vert\geq\Vert x\Vert_\infty\cdot\Vert p\Vert=:\alpha\Vert x\Vert_\infty$$
+\qed
+
+\paragraph{Bemerkung:}Sei $\Vert\cdot\Vert$ eine beliebige Norm auf $\R^d$. Dann gilt
+$$f\in L_1\iff\Vert f\Vert\in L_1$$
+da f\"ur $i=1,\hdots,d$ gilt
+$$|f_i|\leq\Vert f\Vert_2\leq\sum_{j=1}^d|f_j|$$
+und alle Normen auf $\R^d$ \"aquivalent sind (cf. Lemma 8.25).
+
+
+%\chapter*{9. Zufallsvektoren}
+%\addcontentsline{toc}{chapter}{9. Zufallsvektoren}
+
+\chapter*{9. Konvergenz von messbaren Abbildungen}
+\addcontentsline{toc}{chapter}{9. Konvergenz von messbaren Abbildungen}
+Sei in diesem Kapitel $(\Omega,\A,\mu)$ immer ein generischer Ma\ss{}raum.
+\section*{Konvergenz von $\overline\R$-wertigen Funktionen}
+\addcontentsline{toc}{section}{Konvergenz von $\overline{\mathbb{R}}$-wertigen Funktionen}
+Seien in diesem Abschnitt $f_n,f,g_n,g:(\Omega,\A)\to(\overline\R,\mathbb{B}(\overline\R))$ messbare Funktionen. Weiters setze hier $\infty-\infty=-\infty+\infty:=0$.
+
+% Hier wollte ich fragen, ob man nicht als Teilmenge einer Nullmenge definieren sollte (da die jetzt verwendete Menge nicht unbedingt messbar ist, falls f_n nicht konvergiert, oder?) (Oder Definition mit limsup, liminf und f)
+\paragraph{9.1. Definition:} Eine Funktionenfolge $f_n,n\geq1$ konvergiert $\mu$-fast-\"uberall (kurz f.\"u.) gegen $f$, falls
+$$\mu\left(\left\{\omega\in\Omega:\lim_{n\to\infty}f_n(\omega)=f(\omega)\right\}^c\right)=0$$
+Wir schreiben dann $f_n\nto{a.e.}{n\to\infty}f$ (almost everywhere) oder im Falle eines Wahrscheinlichkeitsraumes $a.s.$ (amost surely).
+
+\paragraph{9.2. Lemma:} Es gilt $f_n\nto{a.e.}{n\to\infty}f$ genau dann, wenn
+\begin{enumerate}[label=(\roman*)]
+    \item $\forall\eps>0:\mu\left(\displaystyle\limsup_{n\to\infty}\left\{|f_n-f|\geq\eps\right\}\right)=0$
+    \item Falls $\mu$ endlich ist, dann ist (i) \"aquivalent zu $\forall\eps>0:\displaystyle\lim_{N\to\infty}\mu\left(|f_n-f|>\eps\text{ f\"ur alle }n\geq N\right)=0$
+\end{enumerate}
+
+\paragraph{Beweis:}Mit der archimedischen Eigenschaft  von $\R$ gen\"ugt es jeweils den Fall $\eps=1/k$ f\"ur alle $k\geq1$ zu betrachten. 
+\begin{enumerate}[label=\Roman*.]
+    \item $f_n\nto{a.e.}{n\to\infty}f\implies$(i):
+\begin{align*}
+    \left\{\lim_{n\to\infty}f_n=f\right\}&=\left\{\forall k\geq1\exists N\geq1\forall n\geq N:|f_n-f|<\dfrac{1}{k}\right\} \\
+    &=\bigcap_{k\geq1}\bigcup_{N\geq1}\bigcap_{n\geq N}\left\{|f_n-f|<\dfrac{1}{k}\right\}\\
+    &=\bigcap_{k\geq1}\liminf_{n\to\infty}\left\{|f_n-f|>\dfrac{1}{k}\right\}
+\end{align*}
+Also gilt mit de Morgan und den Gesetzen zu $\limsup$ und $\liminf$ von Mengen
+$$\left\{\lim_{n\to\infty}f_n=f\right\}^c=\bigcup_{k\geq1}\limsup_{n\to\infty}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}$$
+und laut Annahme damit
+$$\mu\left(\bigcup_{k\geq1}\limsup_{n\to\infty}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}\right)=0$$
+und damit insbesondere
+$$\mu\left(\limsup_{n\to\infty}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}\right)=0$$
+f\"ur jedes $k\geq1$ (da $A_k\subseteq\cup_{k\geq1}A_k$ f\"ur alle $k\geq1$).
+    \item (i)$\implies f_n\nto{a.e.}{n\to\infty}f$:
+\begin{align*}
+    \mu\left(\lim_{n\to\infty}f_n\neq f\right)&\overset{\text{s.o.}}{=}\mu\left(\bigcup_{k\geq1}\limsup_{n\to\infty}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}\right)\\
+    &\overset{\sigma\text{-Subadd.}}{\leq}\sum_{k\geq1}\mu\left(\limsup_{n\to\infty}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}\right)=0
+\end{align*}
+wobei der letzte Schritt aus der Annahme folgt.
+    \item $\mu$ endlich $\implies$((i)$\iff$(ii)):\newline
+\begin{align*}
+    \limsup_{n\to\infty}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}&=\bigcap_{N\geq1}\bigcup_{n\geq N}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}=:\bigcap_{N\geq1}A_N
+\end{align*}
+Dann gilt $A_1\supseteq A_2\supseteq\hdots\supseteq\bigcap_{N\geq1}A_N$ und mit der Stetigkeit von oben gilt
+\begin{align*}
+    \mu\left(\limsup_{n\to\infty}\left\{|f_n-f|\geq\dfrac{1}{k}\right\}\right)&=\lim_{N\to\infty}\mu(A_N)\\
+    &=\lim_{N\to\infty}\mu\left(|f_n-f|>\dfrac{1}{k}\text{ f\"ur alle }n\geq N\right)=0
+\end{align*}
+f\"ur alle $k\geq1$. \qed
+\end{enumerate}
+
+\paragraph{9.3. Lemma:}
+$$\forall\eps>0:\sum_{n\geq1}\mu\left(|f_n-f|>\eps\right)<\infty\implies f_n\nto{a.e.}{n\to\infty}f$$
+
+\paragraph{Beweis:}Mit dem 1. Borel\textendash Cantelli-Lemma f\"ur allgemeine Ma\ss{}e (Lemma 7.8, Bemerkung 2) gilt 
+$$\mu\left(\limsup_{n\to\infty}{|f_n-f|>\eps}\right)=0$$
+und mit Lemma 9.2 folgt die Behauptung. \qed
+
+\paragraph{9.4. Definition:}Eine Funktionenfolge $f_n,n\geq1$ konvergiert im Ma\ss{} $\mu$ gegen $f$, falls
+$$\forall\eps>0:\lim_{n\to\infty}\mu\left(|f_n-f|>\eps\right)=0$$
+Wir schreiben dann $f_n\nto{\mu}{n\to\infty}f$.
+
+\paragraph{9.5. Proposition:}Ist $\mu$ endlich, dann gilt $f_n\nto{a.e.}{n\to\infty}f\implies f_n\nto{\mu}{n\to\infty}f$.
+
+\paragraph{Beweis:}Es gelte $f_n\nto{a.e.}{n\to\infty}f$. Mit Lemma 9.2 (ii) folgt
+$$\forall\eps>0\lim_{N\to\infty}\mu\left(|f_n-f|>\eps\text{ f\"ur alle }n\geq N\right)=0$$
+Aber $\{|f_n-f|>\eps\}\subseteq \left\{|f_n-f|>\eps\text{ f\"ur alle }n\geq N\right\}$
+und damit folgt per Definition von Konvergenz im Ma\ss{} die Aussage. \qed
+
+\paragraph{9.6. Proposition:} Sei $\mu$ endlich. Dann ist $f_n\nto{\mu}{n\to\infty}f$ \"aquivalent zu folgender Aussage:\newline
+Jede Teilfolge $f_{n_k},k\geq1$ von $f_n,n\geq1$ enth\"alt eine weitere Teilfolge $f_{n_{k_j}},j\geq1$, sodass 
+$$f_{n_{k_j}}\nto{a.e.}{j\to\infty}f$$
+% Hier habe ich die zus\"atzliche Anmerkung, dass n_k, n_k_j gegen unendlich gehen weggelassen, da dass per Definition einer Teilfolge sowieso gelten muss
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*.]
+    \item $\implies$\newline
+    Sei $0<\eps<1$. Da $\mu(|f_n-f|>\eps)\nto{}{n\to\infty}0$, kann man o.B.d.A. annehmen, dass $\mu(|f_n-f|>\eps)\leq1$ f\"ur alle $n\geq1$ (w\"ahle einfach einen Index $N\geq1$ f\"ur den die Aussage wahr ist, das Argument \"andert sich dadurch nicht). Sei nun eine beliebige Teilfolge $f_{n_k},k\geq1$ gegeben. W\"ahle nun eine weitere Teilfolge $f_{n_{k_j}},j\geq1$, sodass 
+    $$\mu\left(|f_{n_{k_j}}-f|>\dfrac{1}{j}\right)<2^{-j}$$
+    % Hier w\"are vielleicht gut zu erw\"ahnen warum das geht
+    Dann gilt 
+    $$\sum_{j\geq1}\mu(|f_{n_{k_j}}-f|>\eps)=\sum_{\substack{j\geq1\\ j\leq 1/\eps}}\mu(|f_{n_{k_j}}-f|>\eps)+\sum_{\substack{j\geq1\\ j\geq 1/\eps}}\mu(|f_{n_{k_j}}-f|>\eps)$$
+    Die erste Summe ist endlich, und jeder Term ist nach oben durch $1$ beschr\"ankt. Eine Absch\"atzung der Terme in der zweiten Summe erfolgt mit obigem Argument.
+    Damit gilt
+    $$\sum_{j\geq1}\mu(|f_{n_{k_j}}-f|>\eps)\leq\dfrac{1}{\eps}+\sum_{j\geq1}2^{-j}=\dfrac{1}{\eps}+2<\infty$$
+    und mit Lemma 9.3 folgt $f_{n_{k_j}}\nto{a.e.}{j\to\infty}f$.
+    \item $\impliedby$\newline
+    Angenommen $f_n\xcancel{\nto{\mu}{n\to\infty}}f$. Dann gibt es $\eps>0$, sodass $\mu(|f_n-f|>\eps)$ nicht gegen $0$ geht. Da $\mu$ aber endlich ist, ist die Folge $\left(\mu(|f_n-f|>\eps)\right)_{n\geq1}$ beschr\"ankt  und mit Bolzano\textendash Weierstra\ss{} existiert eine Teilfolge $f_{n_k},k\geq1$, die konvergiert, also 
+    $$\lim_{k\to\infty}\mu(|f_{n_k}-f|>\eps)=\alpha$$
+    mit $\alpha>0$. % Hier bin ich mir bei der Argumentation nicht wirklich sicher
+    Da alle Teilfolgen von konvergenten Folgen gegen denselben Grenzwert konvergieren, folgt f\"ur die Teilfolge $f_{n_{k_j}},j\geq1$ aus der Annahme
+    $$\lim_{j\to\infty}\mu(|f_{n_{k_j}}-f|>\eps)=\alpha$$
+    Mit Proposition 9.5 gilt aber $f_{n_{k_j}}\nto{\mu}{j\to\infty}f$ und damit erhalten wir einen Widerspruch. \qed
+\end{enumerate}
+
+\paragraph{9.7. Definition:} Sei $p\geq1$. Eine Funktionenfolge $f_n,n\geq1$ konvergiert in $L_p$ (bzw. im $p$-ten Mittel) gegen $f$, falls
+$$\int|f_n-f|^p\ d\mu\nto{}{n\to\infty}0$$
+Wir schreiben dann $f_n\nto{L_p}{n\to\infty}f$
+
+\paragraph{9.8. Proposition:}
+$$f_n\nto{L_p}{n\to\infty}f\implies f_n\nto{\mu}{n\to\infty}f$$
+
+\paragraph{Beweis:}Sei $\eps>0$. Es gilt
+\begin{align*}
+    \int|f_n-f|^p\ d\mu&\geq \int|f_n-f|^p\cdot\ind{\{|f_n-f|^p>\eps^p\}}\ d\mu\\
+    &\geq \int \eps^p\cdot\ind{\{|f_n-f|^p>\eps^p\}}\ d\mu \\
+    &=\eps^p\cdot\mu(|f_n-f|^p>\eps^p)
+\end{align*}
+Teile beide Seiten durch $\eps^p$ und die linke Seite konvergiert noch immer gegen $0$, und damit auch die rechte Seite. Damit folgt per Definiton von Konvergenz im Ma\ss{} die Aussage. \qed
+
+\paragraph{Bemerkung:} Der Beweis liefert auch eine allgemeine Form der Markov-Ungleichung: F\"ur $g\geq0$ und $\eps>0$ gilt
+$$\mu(g\geq\eps)\leq\dfrac{1}{\eps}\int f\ d\mu$$
+
+\paragraph{9.9. Proposition:} F\"ur $1\leq p\leq q<\infty$ gilt 
+$$f_n\nto{L_q}{n\to\infty}f\implies f_n\nto{L_p}{n\to\infty}f$$
+\paragraph{Beweis:}Mit der Ljapunov-Ungleichung gilt
+$$\left(\int|f_n-f|^p\ d\mu\right)^{1/p}\leq\left(\int|f_n-f|^q\ d\mu \right)^{1/q}$$
+wobei die rechte Seite laut Annahme gegen $0$ konvergiert. Die Aussage folgt mit dem continuous mapping theorem f\"ur konvergente Folgen reeller Zahlen. \qed
+
+\paragraph{9.10. Proposition:}Sei $f_n,n\geq1$ eine Funktionenfolge, sodass $f_n\nto{L_1}{n\to\infty}f$ f\"ur eine absolut integrierbare Funktion $f$, i.e. $f\in L_1$. Dann folgt
+$$\int f_n\ d\mu\nto{}{n\to\infty}\int f\ d\mu$$
+
+\paragraph{Beweis:}Es gilt $f_n\in L_1$ f\"ur hinreichend gro\ss{}e $n$ (also $\exists N\geq1\forall n\geq N:f_n\in L_1$), denn mit der Dreiecksungleichung gilt
+$$\limsup_{n\to\infty}\int|f_n|\ d\mu\leq\limsup_{n\to\infty}\left(\int|f_n-f|\ d\mu+\int|f|\ d\mu\right)<\infty$$
+Weiters ist 
+$$\limsup_{n\to\infty}\left|\int f_n\ d\mu-\int f\ d\mu\right|\leq\limsup_{n\to\infty}\int|f_n-f|\ d\mu=0$$
+womit die Aussage folgt. \qed
+
+\paragraph{9.12. Proposition:}Sei $\mu$ ein endliches Ma\ss{} und $f_n,g_n,f,g$ alle reellwertig f\"ur alle $n\geq1$, sodass $f_n\nto{\mu/a.e.}{n\to\infty}f$ und $g_n\nto{\mu/a.e.}{n\to\infty}g$. Dann gilt
+\begin{enumerate}[label=(\roman*)]
+    \item $f_n\pm g_n\nto{\mu/a.e.}{n\to\infty}f\pm g$
+    \item $f_n\cdot g_n\nto{\mu/a.e.}{n\to\infty}f\cdot g$
+    \item Falls $\mu(g=0)$, dann $\dfrac{f_n}{g_n}\nto{\mu/a.e.}{n\to\infty}\dfrac{f}{g}$
+\end{enumerate}
+
+\paragraph{Beweis:} Der Fall f\"ur Konvergenz f.\"u. folgt sofort aus der Tatsache, dass die Vereinigung zweier Nullmengen wieder eine Nullmenge ist. Zeige also die Aussage f\"ur Konvergenz im Ma\ss{}.\newline\newline
+Sei $n_k,k\geq1$ eine Teilfolge von $n,n\geq1$. Weil $f_n\nto{\mu}{n\to\infty}f$, gibt es eine wegen Proposition 9.6 eine weitere Teilfolge $n_{k_j},j\geq1$ von $n_k,k\geq1$, sodass $f_{n_{k_j}}\nto{a.e.}{j\to\infty}f$. Da $n_{k_j},j\geq1$ aber auch eine Teilfolge der urspr\"unglichen Folge $n,n\geq1$ ist, gibt es eine weitere Teilfolge $n_{k_{j_\ell}},\ell\geq1$, sodass $g_{n_{k_{j_\ell}}}\nto{a.e.}{\ell\to\infty}g$. Es gilt aber auch $f_{n_{k_{j_\ell}}}\nto{a.e.}{\ell\to\infty}f$ und damit $f_{n_{k_{j_\ell}}}\pm g_{n_{k_{j_\ell}}}\nto{a.e.}{\ell\to\infty}f\pm g$ und $f_{n_{k_{j_\ell}}}\cdot g_{n_{k_{j_\ell}}}\nto{a.e.}{\ell\to\infty}f\cdot g$. Damit gibt es f\"ur jede Teilfolge $n_k,k\geq1$ von $n,n\geq1$ eine weitere Teilfolge $n_{k_{j_\ell}},\ell\geq1$, sodass Summe/Differenz/Produkt konvergieren und mit Proposition 9.6 folgt die Aussage f\"ur Konvergenz im Ma\ss{}. F\"ur (iii) siehe \"Ubung! \qed
+
+% M\"ussen f_n, f hier reelwertig sein?
+% Ich habe hier den allgemeineren Fall behandelt, wo H nicht unbedingt messbar ist.
+\paragraph{9.13. Satz (Continuous Mapping Theorem, CMT):}Sei $\mu$ endlich und sei $f_n,n\geq1$ eine reellwertige Funktionenfolge, sodass $f_n\nto{\mu/a.e.}{n\to\infty}f$. Sei weiters $h:\R\to\R$ eine Abbildung, die stetig auf einer Menge $H\subseteq N$, mit $\mu(f\notin N)=0$ ist. Dann gilt
+$$h(f_n)\nto{\mu/a.e.}{n\to\infty}h(f)$$
+
+\paragraph{Beweis:}Zeige den Fall mit Konvergenz f.\"u. Sei $A:=\{\lim_{n\to\infty}f_n\neq f\}\cup\{f\notin N\}$. Dann gilt mit der $\sigma$-Subadditivit\"at $\mu(A)=0$ und f\"ur $\omega\notin A$ gilt $f_n(\omega)\nto{}{n\to\infty} f(\omega)$ und $f(\omega)\in H$. Mit dem Continuous Mapping Theorem f\"ur punktweise Konvergenz folgt $h(f_n(\omega))\nto{}{n\to\infty}h(f(\omega))$. Damit folgt 
+$$h(f_n)\nto{a.e.}{n\to\infty}h(f)$$
+Die Aussage f\"ur Konvergenz im Ma\ss{} folgt mit Proposition 9.6. \qed
+
+% Hier habe ich k zu d ausgebessert, da wir k oft als Index von Teilfolgen verwenden
+\section*{Konvergenz von $\mathbb{R}^d$-wertigen Funktionen}
+\addcontentsline{toc}{section}{Konvergenz von $\mathbb{R}^d$-wertigen Funktionen}
+In diesem Abschnitt seien $f_n,f:\Omega\to\R^d$ $\A\textendash \mathcal{B}(R^d)$-messbar und $\Vert\cdot\Vert$ die euklidische Norm auf $\R^d$.
+
+\paragraph{9.14. Definition:}
+$$f_n\nto{\mu/a.e./L_p}{n\to\infty}f\iff\Vert f_n-f\Vert\xrightarrow[n\to\infty]{\makebox[3.5em][c]{$\scriptstyle\mu/a.e./L_p$}}0$$
+
+\paragraph{9.15. Proposition:}F\"ur $f_n=\left(f_n^{(1)},\hdots,f_n^{(d)}\right)'$ und $f=\left(f^{(1)},\hdots,f^{(d)}\right)'$ gilt
+$$f_n\nto{\mu/a.e./L_p}{n\to\infty}f\iff\forall i=1,\hdots,d:f_n^{(i)}\xrightarrow[n\to\infty]{\makebox[3.5em][c]{$\scriptstyle\mu/a.e./L_p$}}f^{(i)}$$
+
+\paragraph{Beweis:} F\"ur $x=(x_1,\hdots,x_d)'$ gilt die folgende Ungleichung f\"ur alle $j=1,\hdots,d$
+$$|x_j|=\sqrt{x_j^2}\leq\sqrt{\sum_{j=1}^dx_j^2}=\Vert x\Vert\leq\sqrt{d\cdot\max_{1\leq j\leq d}x_j^2}=\sqrt{d}\max_{1\leq j\leq d}|x_j|\leq\sqrt{d}\sum_{j=1}^d|x_j|$$
+und damit
+$$|f_n^{(i)}-f^{(i)}|\leq\Vert f_n-f\Vert\leq\sqrt{d}\sum_{j=1}^d|f_n^{(j)}-f^{(j)}|$$
+womit die Behauptung folgt. \qed
+
+\paragraph{Bermekung:} Damit gelten die Resultate aus dem vorherigen Abschnitt auch f\"ur vektorwertige rationale Operationen, soweit diese definiert sind.
+
+\section*{Konvergenz von Integralen}
+Seien in diesem Abschnitt $(\Omega,\A,\mu)$ ein Ma\ss{}raum und $f_n,f:(\Omega,\A)\to(\overline\R,\mathcal{B}(\overline\R))$ messbar.
+
+\paragraph{9.16. Lemma (von Fatou, 1.Version):}Sei $f_n,n\geq1$ eine Folge nicht-negativer Funktionen. Dann gilt
+$$\int\liminf_{n\to\infty}f_n\ d\mu\leq\liminf_{n\to\infty}\int f_n\ d\mu$$
+
+\paragraph{Beweis:}Setze $g_n:=\inf_{k\geq n}f_k$, sodass $\liminf_{n\to\infty}=\lim_{n\to\infty}g_n$ und $0\leq g_1\leq\hdots\leq \lim_{n\to\infty}g_n$. Dann gilt mit MONK
+$$\int\lim_{n\to\infty}g_n=\int\liminf_{n\to\infty}f_n\ d\mu=\lim_{n\to\infty}\int g_n\ d\mu$$
+Da aber $g_n=\inf_{k\geq n}f_k\leq f_n$ gilt f\"ur alle $n\geq1:\int g_n\ d\mu\leq\int f_n\ d\mu$
+und damit 
+$$\int\liminf_{n\to\infty}f_n\ d\mu=\lim_{n\to\infty}\int g_n\ d\mu\leq\liminf_{n\to\infty}\int f_n\ d\mu$$
+\qed
+
+% Ist die quasi-integrierbarkeit von f_n hier eine Annahme oder Folgerung?
+\paragraph{9.17. Lemma (von Fatou, 2.Version):}Sei $f_n,n\geq1$ eine Folge von Funktionen, sodass $g\leq f_n$ f\"ur alle $n\geq1$ und $g_-\in L_1$. Sei weiters $f_n$ quasi-integrierbar, i.e. $f\in L$, f\"ur alle $n\geq1$. Dann gilt
+$$\int\liminf_{n\to\infty}f_n\ d\mu\leq\liminf_{n\to\infty}\int f_n\ d\mu$$
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*.]
+    \item Fall ($\int g_+\ d\mu=\infty$)\newline
+    Weil $f\leq f_n$ f\"ur alle $n\geq1$ und damit $g\leq\liminf_{n\to\infty}f_n$, folgt $\int f_n\ d\mu=\infty$ f\"ur alle $n\geq1$. Damit gilt auch $\liminf_{n\to\infty}\int f_n\ d\mu=\infty$ und die Aussage folgt trivial.
+    \item Fall ($\int g_+\ d\mu<\infty$)\newline
+    Damit gilt laut Voraussetzung $g\in L_1$ und damit $g<\infty$ f.\"u., sodass f\"ur alle $n\geq1$ $(f_n-g)$ f.\"u. wohldefiniert und  f.\"u. nicht-negativ ist. Mit Lemma 9.16 folgt
+    $$\int\liminf_{n\to\infty}(f_n-g)\ d\mu\leq\liminf_{n\to\infty}\int f_n-g\ d\mu$$
+    und mit der Linearit\"at des Integrals und der Tatsache, dass $g$ nicht von $n$ abh\"angt folgt die Aussage. \qed
+\end{enumerate}
+
+\paragraph{9.18. Satz (Dominated Convergence Theorem, DOMK):} Sei $f_n,n\geq1$ eine Funktionenfolge, sodas $f_n\nto{\mu}{n\to\infty}f$ und $|f_n|\leq g$ f\"ur alle $n\geq1$ und eine integrierbare Funktion $g$. Dann folgt
+\begin{enumerate}[label=(\roman*)]
+    \item $f\in L_1$
+    \item $\displaystyle\int f_n\ d\mu\nto{}{n\to\infty}\int f\ d\mu$
+    \item $f_n\nto{L_1}{n\to\infty}f$
+\end{enumerate}
+
+\paragraph{Beweis:}
+% Hier muss ich den allgemeinen Beweis noch ausarbeiten
+
+\paragraph{9.19. Korollar (Bounded Convergence Theorem):}Sei $\mu$ ein endliches Ma\ss{} und $f_n,n\geq1$ eine Funktionenfolge, sodass $f_n\nto{\mu}{n\to\infty}f$ und $|f_n|\leq K$ f\"ur ein $K\in[0,\infty)$. Dann folgt (i), (ii) und (iii) aus Satz 9.18.
+
+\paragraph{Beweis:}Folgt sofort aus DOMK (Satz 9.18) und $\int K\ d\mu=K\cdot\mu(\Omega)<\infty$ f\"ur endliche Ma\ss{}e. \qed
+
+\paragraph{9.20. Lemma (Scheff\'e's Lemma):}Seien $f_n,n\geq1,f$ nicht-negative, integrierbare Funktionen, sodass $f_n\nto{\mu}{n\to\infty}f$. Falls zus\"atzlich $\int f_n\ d\mu\nto{}{n\to\infty}\int f\ d\mu$, dann folgt $f_n\nto{L_1}{n\to\infty}f$.
+
+\paragraph{Beweis:}Setze $h_n:=f-f_n$ und wende DOMK (Satz 9.18) auf die Folgen $(h_n)_+,n\geq1$ und $(h_n)_-,n\geq1$ an. \qed
+
+\paragraph{9.21. Proposition:}Falls $f_n\nto{L_p}{n\to\infty}f$ und $f\in L_p$ f\"ur ein $p\geq1$, dann folgt
+\begin{enumerate}[label=(\roman*)]
+    \item $\displaystyle\int|f_n|^p\ d\mu\nto{}{n\to\infty}\int|f|^p\ d\mu$
+    \item $\displaystyle\int f_n\ d\mu\nto{}{n\to\infty}\int f\ d\mu$
+\end{enumerate} 
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=(\roman*)]
+    \item Mit der Minkowski-Ungleichung gilt
+    $$\left(\int|f_n|^p\ d\mu\right)^{1/p}=\left(\int|f_n-f+f|^p\ d\mu\right)^{1/p}\leq\left(\int|f_n-f|^p\ d\mu\right)^{1/p}+\left(\int|f|^p\ d\mu\right)^{1/p}$$
+    wobei der erste Summand laut Annahme gegen $0$ konvergiert (und damit insbesondere ab einem Index $N\geq1$ endlich ist) und der zweite Summand laut Annahme endlich ist. Es gilt also $f_n\in L_p$ f\"ur hinreichend gro\ss{}e $n$. Weiters folgt
+    $$\limsup_{n\to\infty}\int|f_n|^p\ d\mu\leq\int|f|^p\ d\mu$$
+    da der erste Summand nicht-negativ ist.
+    Aber mit der Minkowski-Ungleichung gilt auch
+    $$\left(\int|f|^p\ d\mu\right)^{1/p}=\left(\int|f-f_n+f_n|^p\ d\mu\right)^{1/p}\leq\left(\int|f-f_n|^p\ d\mu\right)^{1/p}+\left(\int|f_n|^p\ d\mu\right)^{1/p}$$
+    sodass 
+    $$\liminf_{n\to\infty}\int|f_n|^p\ d\mu\geq\int|f|^p\ d\mu$$
+    und daher $$\lim_{n\to\infty}\int|f_n|^p\ d\mu=\int|f|\ d\mu$$
+    \item Es gilt $|(f_n)_+-f_+|\leq|f_n-f|$ und $|(f_n)_--f_-|\leq|f_n-f|$ (einfache \"Uberlegung). Laut Annahme gilt $f_n\nto{L_p}{n\to\infty}f$ und mit Proposition 9.9 auch $f_n\nto{L_1}{n\to\infty}f$. Mit den beiden Ungleichung oben folgt also
+    $$(f_n)_+\nto{L_1}{n\to\infty}f_+\text{ und }(f_n)_-\nto{L_1}{n\to\infty}f_-$$
+    Da $f\in L_p$ gilt auch $f\in L_1$ und damit $f_+,f_-\in L_1$. Mit Teil (i) folgt
+    $$\int(f_n)_+\ d\mu\nto{}{n\to\infty}\int f_+\ d\mu\text{ und }\int(f_n)_-\ d\mu\nto{}{n\to\infty}\int f_-\ d\mu$$
+    und mit den Rechenregeln f\"ur Konvergenz von Folgen reeller Zahlen die Aussage. \qed
+\end{enumerate}
+
+\section*{Gleichgradige Integrierbarkeit}
+\addcontentsline{toc}{section}{Gleichgradige Integrierbarkeit}
+Seien in diesem Abschnitt $f_n:(\Omega,\A)\to(\overline\R,\mathcal{B}(\overline\R))$ messbare Funktionen f\"ur alle $n\geq1$.
+
+\paragraph{9.22. Definition:} Sei $\mu$ endlich. Eine Folge messbarer Funktionen $f_n,n\geq1$ ist gleichgradig integrierbar ("uniformly integrable", g.i.), falls
+$$\lim_{\alpha\to\infty}\limsup_{n\to\infty}\int\displaylimits_{|f_n|\geq\alpha}|f_n|\ d\mu=0$$
+
+% Hier br\"acuhte ich auch noch eine Erkl\"arung warum aus f<infty a.e. die Konvergenz vom Produkt mit der Indikatorfunktion folgt
+\paragraph{Bemerkung:}Eine konstante Folge absolut integrierbarer, reellwertiger Funktionen ist gleichgradig integrierbar, da
+$$\lim_{\alpha\to\infty}\int\displaylimits_{\{|f|\geq\alpha\}}|f|\ d\mu=\lim_{\alpha\to\infty}\int|f|\cdot\ind{\{|f|\geq\alpha\}}\ d\mu$$
+wobei $|f|<\infty$ f.\"u., da $f\in L_1$ und damit 
+$$|f|\cdot\ind{\{|f|\geq\alpha\}}\nto{a.e.}{\alpha\to\infty}0\overset{a.e.}{=}\ind{\{|f|=\infty\}}$$
+Da $|f|\cdot\ind{\{|f|\geq\alpha\}}\leq f\in L_1$ folgt mit DOMK
+$$\int\displaylimits_{\{|f|\geq\alpha\}}|f|\ d\mu\nto{}{\alpha\to\infty}\mu(|f|=\infty)=0$$
+
+\paragraph{9.23. Lemma:}Sei $\mu$ endlich und $f_n,n\geq1$ gleichgradig integrierbar. Dann folgt
+$$\limsup_{n\to\infty}\int|f_n|\ d\mu<\infty$$
+i.e. $f_n\in L_1$ f\"ur hinreichend gro\ss{}e $n$.
+
+\paragraph{Beweis:}W\"ahle $\alpha>0$, sodass $\limsup_{n\to\infty}\int_{\{|f_n|\geq\alpha\}}|f_n|<\infty$. Dann gilt
+$$\limsup_{n\to\infty}\int|f_n|\ d\mu=\limsup_{n\to\infty}\left(\int\displaylimits_{\{|f_n|\geq\alpha\}}|f_n|\ d\mu+\int\displaylimits_{\{|f_n|\geq\alpha\}}|f_n|\ d\mu\right)<\infty$$
+wobei der erste Summand laut Annahme endlich ist und der zweite Summand $\leq\alpha\cdot\mu(\Omega)$ ist. \qed
+
+\paragraph{9.24. Lemma:}Sei $\mu$ endlich und seien $f_n,n\geq1$ und $g_n,n\geq1$ gleichgradig integrierbar. Dann ist $f_n+g_n$ f.\"u. wohldefiniert f\"ur hinreichend gro\ss{}e $n$ und $f_n+g_n,n\geq1$ ist gleichgradig integrierbar.
+
+\paragraph{Beweis:}Es ist $\int|f_n|\ d\mu<\infty$ für $n\geq n_f$ und $\int|g_n|\ d\mu<\infty$ für $n\geq n_g$. Damit ist 
+$$\int f_n+g_n\ d\mu\leq\int|f_n|+|g_n|\ d\mu<\infty$$
+und damit $f_n+g_n<\infty$ fast überall für $n\geq\max(n_f,n_g)$. \newline\newline
+Setze nun $h_n:=\max(|f_n|,|g_n|),n\geq1$. Dann gilt $|f_n+g_n|\leq 2h_n$ und 
+\begin{align*}
+    h_n\cdot\ind{\{h_n\geq\alpha/2\}}&=h_n\cdot\ind{\{|f_n|\geq\alpha/2\}}\cdot\ind{\{f_n\geq g_n\}}+h_n\cdot\ind{\{|g_n|\geq\alpha/2\}}\cdot\ind{\{f_n< g_n\}}\\
+    &\leq|f_n|\cdot\ind{\{|f_n|\geq\alpha/2\}}+|g_n|\cdot\ind{\{|g_n|\geq\alpha/2\}}
+\end{align*}
+und damit für $\alpha>0$
+\begin{align*}
+    \int\displaylimits_{\{|f_n+g_n|\geq\alpha\}}|f_n+g_n|\ d\mu&\leq2\int\displaylimits_{\{h_n\geq\alpha/2\}}h_n\ d\mu\\
+    &\leq2\int\displaylimits_{\{|f_n|\geq\alpha/2\}}|f_n|\ d\mu+2\int\displaylimits_{\{|g_n|\geq\alpha/2\}}|g_n|\ d\mu
+\end{align*} 
+wobei der $\limsup$ für $n\to\infty$ beider Summanden für $\alpha\to\infty$ gegen $0$ geht, womit $f_n+g_n,n\geq1$ gleichgradig integrierbar sind. \qed
+
+\paragraph{9.25. Satz:}Sei $\mu$ endlich. Dann ist folgendes \"aquivalent
+\begin{enumerate}[label=(\roman*)]
+    \item $f_n\nto{L_1}{n\to\infty}f$ und $f\in L_1 $
+    \item $f_n\nto{\mu}{n\to\infty}f$ und $f_n,n\geq1$ gleichgradig integrierbar
+\end{enumerate}
+
+\paragraph{Bemerkung:}Aus (i) folgt mit Proposition 9.10, dass 
+$$\int f_n\ d\mu\nto{}{n\to\infty}\int f\ d\mu$$
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*.]
+    \item (i)$\implies$(ii)\newline
+    Aus (i) folgt mit Proposition 9.8, dass $f_n\nto{\mu}{n\to\infty}f$. Weiters ist für $\alpha>0$
+    $$0=\lim_{n\to\infty}\int|f_n-f|\ d\mu\geq\int\displaylimits_{\{|f_n-f|\geq\alpha\}}|f_n-f|\ d\mu\geq0$$
+    Damit ist $f_n-f,n\geq1$ gleichgradig integrierbar. Da $f\in L_1$ ist die konstante Folge $f,n\geq1$ gleichgradig integrierbar und mit Satz 9.24 auch die Summe $f_n=(f_n-f)+f,n\geq1$
+    \item (ii)$\implies$(i)\newline
+     Mit Proposition 9.6 genügt es, die Aussage unter der stärkeren Annahme $f_n\nto{a.e.}{n\to\infty}f$ zu zeigen. Mit Fatou I gilt
+     $$\int|f|\ d\mu=\int\liminf_{n\to\infty}f_n\ d\mu\leq\liminf_{n\to\infty}\int|f_n|\ d\mu\leq\limsup_{n\to\infty}\int|f_n|\ d\mu<\infty$$
+     wobei die Endlichkeit des Integrals für große $n$ aus der Annahme der gleichgradigen Integrierbarkeit folgt. Damit gilt $f\in L_1$.
+     Für $\alpha>0$ gilt
+     $$\int|f_n-f|\ d\mu=\int\displaylimits_{\{|f_n-f|\geq\alpha\}}|f_n-f|\ d\mu+\int\displaylimits_{\{|f_n-f|<\alpha\}}|f_n-f|\ d\mu$$
+     wobei mit Korollar 9.19 gilt
+     $$\int\displaylimits_{\{|f_n-f|<\alpha\}}|f_n-f|\ d\mu\nto{}{n\to\infty}0$$
+     und damit
+     $$\limsup_{n\to\infty}\int|f_n-f|\ d\mu=\limsup_{n\to\infty}\int\displaylimits_{\{|f_n-f|\geq\alpha\}}|f_n-f|\ d\mu$$
+     Da aber $f\in L_1$ ist die konstante Folge $f,n\geq1$ gleichgradig integrierbar, womit die Aussage mit der Dreiecksungleichung für $\alpha\searrow0$ folgt. \qed
+\end{enumerate}
+
+\paragraph{9.26. Proposition:}Sei $\mu$ endlich. Angenommen $f_n\nto{\mu}{n\to\infty}f$ und $\limsup_{n\to\infty}\int|f_n|^{1+\delta}\ d\mu<\infty$ f\"ur ein $\delta>0$. Dann folgt
+\begin{enumerate}[label=(\roman*)]
+    \item $f\in L_1$
+    \item $\displaystyle\int f_n\ d\mu\nto{}{n\to\infty}\int f\ d\mu$
+    \item $f_n\nto{L_1}{n\to\infty}f$
+\end{enumerate}
+
+\paragraph{Beweis:}Unter der Annahme $f_n\nto{\mu}{n\to\infty}$ gen\"ugt es mit Satz 9.25 zu zeigen, dass $f_n,n\geq1$ gleichgradig integrierbar ist.
+\begin{align*}
+    \limsup_{n\to\infty}\int\displaylimits_{\{|f_n|\geq\alpha\}}|f_n|\ d\mu&= \limsup_{n\to\infty}\int\displaylimits_{\{|f_n|^\delta\geq\alpha^\delta\}}|f_n|\cdot\dfrac{\alpha^\delta}{\alpha^\delta}\ d\mu\\ 
+    &\leq\dfrac{1}{\alpha^\delta}\limsup_{n\to\infty}\int\displaylimits_{\{|f_n|^\delta\geq\alpha^\delta\}}|f_n||f_n|^\delta\ d\mu \\
+    &=\dfrac{1}{\alpha^\delta}\limsup_{n\to\infty}\int\displaylimits_{\{|f_n|\geq\alpha\}}|f_n||f_n|^\delta\ d\mu\nto{}{\alpha\to\infty}0
+\end{align*}
+da der $\limsup$ im letzten Ausdruck endlich ist und $\alpha^{-\delta}\nto{}{\alpha\to\infty}0$. \qed
+
+% Soll ich das als eigenes Kapitel oder als Abschnitt (von 9 oder 10??) gestalten? Von der Nummerierung w\"are es ein eigenes Kapitel, sinngem\"a\ss{} passt es aber irgendwie eher zu 10.
+\chapter*{10. Konvergenz von Zufallsvariablen}
+\addcontentsline{toc}{chapter}{10. Konvergenz von Zufallsvariablen}
+
+\section*{Gesetze der gro\ss{}en Zahlen}
+\addcontentsline{toc}{section}{Gesetze der gro\ss{}en Zahlen}
+
+Sei im folgenden Kapitel $(\Omega,\mathcal{A},\Pp)$ jeweils ein
+Wahrscheinlichkeitsraum und $X_n,X\in L_1, n\geq1$ jeweils
+$\overline{\R}$-wertige Zufallsvariablen.
+
+\paragraph{10.1. Proposition:} Sei $X\in L_2$. Dann ist folgendes
+\"aquivalent:
+\begin{enumerate}
+    \item $\dfrac{1}{n}\displaystyle\sum_{i=1}^n(X_i-\E X_i)\nto{L_2}{n\to\infty}0$
+	\item $\dfrac{1}{n^2}\displaystyle\sum_{i=1}^n\sum_{j=1}^n\operatorname{Cov}(X_i,X_j)\nto{}{n\to\infty}0$
+\end{enumerate}
+
+\paragraph{Beweis:} 
+\begin{equation*}
+    \E\left[\left(\dfrac{1}{n}\sum_{i=1}^n(X_i-\E X_i\right)^2\right]=\dfrac{1}{n^2}\sum_{i=1}^n\sum_{j=1}^n\E\left[(X_i-\E X_i)(X_j-\E X_j)\right]
+\end{equation*}
+
+
+\paragraph{Bermerkung:} F\"ur $X_i\in L_2$ unkorreliert ist 2. \"aquivalent zu $$\dfrac{1}{n^2}\sum_{i=1}^n\Var(X_i)\nto{}{}0$$ Falls die $X_i\in L_2$ und i.i.d. sind, gilt 1. und 2. trivial.
+
+
+\paragraph{10.2. Satz (Schwaches Gesetz der gro\ss{}en Zahlen, WLLN):} Seien $X_i\in L_1$ i.i.d.. Dann gilt: 
+    $$\dfrac{1}{n}\sum_{i=1}^nX_i\nto{P}{n\to\infty}\E X_1$$ 
+
+\paragraph{Beweis:} Sei $M>0$. Dann gilt
+\begin{align*}
+    \dfrac{1}{n}\sum_{i=1}^n(X_i-\E X_i)
+    &=\dfrac{1}{n}\sum_{i=1}^n\left(X_i\cdot\ind{\{|X_i|\leq M\}}-\E [X_i\cdot\ind{\{|X_i|\leq M\}}]\right)\\
+    &+\dfrac{1}{n}\sum_{i=1}^n\left(X_i\cdot\ind{\{|X_i|> M\}}-\E[ X_i\cdot\ind{\{|X_i|> M\}}]\right)
+\end{align*}
+\begin{enumerate}[label=\Roman*.]
+    \item Zum ersten Summanden: \newline
+    Die Zufallsvariablen $X_i\cdot\ind{\{|X_i|\leq M\}}$ sind unabhängig und beschränkt (also $\in L_\infty$ und damit insbesondere $\in L_2$). Damit ist
+    $$\Var\left(X_i\cdot\ind{\{|X_i|\leq M\}}\right)=\E\left[X_i^2\cdot\ind{\{|X_i|\leq M\}}\right]-\left(\E\left[X_i\cdot\ind{\{|X_i|\leq M\}}\right]\right)^2\leq 2M^2$$
+    Mit Bemerkung (ii) zu Proposition 10.1 folgt damit, dass der erste Summand $\nto{L_2}{n\to\infty}$ und damit $\nto{P}{n\to\infty}0$.
+    \item Zum zweiten Summanden:\newline
+    \begin{align*}
+        \E\left|\dfrac{1}{n}\sum_{i=1}^n\left(X_i\cdot\ind{\{|X_i|> M\}}-\E[ X_i\cdot\ind{\{|X_i|> M\}}]\right)\right|
+        &\overset{\text{2x DUG}}{\leq}
+        \E\left[\dfrac{1}{n}\sum_{i=1}^n\left|X_i\cdot\ind{\{|X_i|> M\}}\right|+\left|\E[ X_i\cdot\ind{\{|X_i|> M\}}]\right|\right]\\
+        &\leq\dfrac{1}{n}\sum_{i=1}^n\E\left|X_i\cdot\ind{\{|X_i|>M\}}\right|+\E[ |X_i|\cdot\ind{\{|X_i|> M\}}]\\
+        &=2\cdot\E\left[|X_1|\cdot\ind{\{|X_i|>M\}}\right]\nto{}{M\to\infty}0
+    \end{align*}
+\end{enumerate}
+Sei also $\eps>0$. Dann ist
+\begin{align*}
+    \limsup_{n\to\infty}\Pp\left(\left|\dfrac{1}{n}\sum_{i=1}^n(X_i-\E X_i)\right|>\eps\right)&=\limsup_{n\to\infty}\Pp(|(1)+(2)|>\eps)\\
+    &\leq\limsup_{n\to\infty}\Pp\left(|(1)|>\dfrac{\eps}{2}\right)+\Pp\left(|(2)|>\dfrac{\eps}{2}\right)\\
+    &=\limsup_{n\to\infty}\Pp\left(|(2)|>\dfrac{\eps}{2}\right)\\
+    &\overset{\text{Markov}}{\leq}\limsup_{n\to\infty}\dfrac{2\cdot\E|(2)|}{\eps}\\
+    &\leq\dfrac{4\cdot\E\left[|X_1|\cdot\ind{\{|X_i|>M\}}\right]}{\eps}
+\end{align*}
+für jedes $M>0$. Wähle nun für $\eps>0$ ein $M>0$ so, sodass dieser Ausdruck $<\delta$ ist. Das funktioniert wegen II. für jedes $\delta>0$ und daher folgt 
+$$\Pp\left(\left|\dfrac{1}{n}\sum_{i=1}^n(X_i-\E X_i)\right|>\eps\right)\nto{}{n\to\infty}0$$
+und damit die Aussage. \qed
+
+\paragraph{10.3. Satz (Starkes Gesetz der gro\ss{}en Zahlen, SLLN):} Seien
+$X_i\in L_1$ i.i.d.. Dann gilt sogar die st\"arkere Aussage: 
+$$\dfrac{1}{n}\sum_{i=1}^nX_i\nto{a.s.}{n\to\infty}\E X_1$$ 
+
+\paragraph{Beweis:} siehe z.B.: P. Billingsley, \textit{Probability and Measure} (2nd Ed.), Theorem 6.1 \qed
+
+\paragraph{10.4. Proposition (Momentenmethode):} Betrachte i.i.d. Zufallsvariablen $X_i,i\geq1$, sodass $X_i^d\in L_1$ für ein $d\geq1$. Sei außerdem $f:\R^d\to\R^\ell$ und setze $\theta:=f(\E X_1^1,\hdots,\E X_1^d)$ ($\theta$ könnte z.B. als Funktion der ersten $d$ Momente die Verteilung von $X_1$ parametrisieren). Falls $f$ stetig im Punkt $(\E X_1^1,\hdots,\E X_1^d)'$ ist, dann gilt für $\hat\theta_n:=f\left(\frac{1}{n}\sum_{i=1}^nX_i^1,\hdots,\frac{1}{n}\sum_{i=1}^nX_i^d\right)$, dass $\hat\theta_n\nto{P}{n\to\infty}\theta$.
+
+\paragraph{Beweis:}Mit der Ljapunov-Unggleichung gilt $X_i^j\in L_1$ für $j=1,\hdots,d$. Weiters sind $X_i^j$ i.i.d. Mit dem SLLN gilt damit für $j=1,\hdots,d$
+$$\dfrac{1}{n}\sum_{i=1}^nX_i^j\nto{a.s.}{n\to\infty}\E X_1^j$$
+und mit Proposition 9.15 folgt 
+$$\left(\frac{1}{n}\sum_{i=1}^nX_i^1,\hdots,\frac{1}{n}\sum_{i=1}^nX_i^d\right)'\nto{a.s.}{n\to\infty}(\E X_1^1,\hdots,\E X_1^d)'$$
+Die Aussage folgt schließlich mit dem CMT (quasi Satz 9.13. für $f:\R^d\to\R^\ell$). \qed 
+
+
+\chapter*{11. Schwache Konvergenz}
+\addcontentsline{toc}{chapter}{11. Schwache Konvergenz}
+ Betrachte in diesem Kapitel einen Wahrscheinlichkeitsraum $\pspace$, reelwertige Zufallsvariablen $X, X_n, n\geq1$ mit entsprechenden cdfs $F,F_n,n\geq1$ bzw. den entsprechenden induzierten Wahrscheinlichkeitsma\ss{}en $\Pp, \Pp_n,n\geq 1$ auf $(\R, \borel)$.
+	
+
+\paragraph{11.1. Definition:} $\Pp_n,n\geq1$ konvergieren schwach/in Verteilung gegen $\Pp$, wenn 
+    $$\forall t\in\R\text{ mit } F(\cdot) \text{ stetig in t}: F_n(t)\nto{}{n\to\infty}F(t)$$ 
+Kurz: $\Pp_n\nto{d}{n\to\infty}\Pp$, oder $F_n\nto{d}{n\to\infty}F$, oder $X_n\nto{d}{n\to\infty}X$.
+
+\paragraph{11.2. Proposition:} $X_n\nto{P}{n\to\infty} X\implies X_n\nto{d}{n\to\infty} X$
+
+\paragraph{Beweis:} Sei $\varepsilon>0$ beliebig.
+\begin{align*}
+    F_n(t)&=\Pp(X_n\leq t)\\
+	&=\Pp(X_n\leq t, |X_n-X|\leq\varepsilon) + \Pp(X_n\leq t,|X_n-X|>\varepsilon) \\
+	&\leq\Pp(X-\varepsilon\leq t,|X_n-X|\leq\varepsilon)+\Pp(|X_n-X|>\varepsilon) \\
+	&\leq \Pp(X-\varepsilon\leq t)+\Pp(|X_n-X|>\varepsilon)
+\end{align*}
+Damit folgt $\forall t\in\R$: 
+    $$\limsup_{n\to\infty}F_n(t)\leq F(t+\varepsilon)$$
+Gleichzeitig gilt:
+\begin{align*}
+    F(t-\varepsilon)&=\Pp(X\leq t-\varepsilon) \\
+	&=\Pp(X\leq t-\varepsilon , |X_n-X|\leq\varepsilon)+\Pp(X\leq t-\varepsilon, |X_n-X|>\varepsilon) \\
+	&\leq\Pp(X_n-\varepsilon\leq t-\varepsilon,|X_n-X|\leq\varepsilon)+\Pp(|X_n-X|>\varepsilon) \\
+	&=\Pp(X_n\leq t)+\Pp(|X_n-X|>\varepsilon)
+\end{align*}
+Damit folgt 
+    $$\liminf_{n\to\infty}F_n(t)\geq F(t-\varepsilon)$$
+Wenn $F(\cdot)$ nun stetig im Punkt $t$ ist, dann gilt 
+    $$\lim_{\varepsilon\searrow0}F(t-\varepsilon)=\lim_{\varepsilon\searrow0}F(t+\varepsilon)=F(t)$$
+und damit 
+	$$F(t)\leq\liminf_{n\to\infty}F_n(t)\leq\limsup_{n\to\infty}F_n(t)\leq F(t)$$	
+und es folgt f\"ur alle $t\in\mathcal{C}(F)$:
+	$$F_n(t)\nto{}{n\to\infty}F(t)$$
+\qed
+
+
+\paragraph{11.3. Proposition:} Es gelte $X_n\nto{d}{n\to\infty}X$ mit $\Pp(X=c)=1$ f\"ur ein $c\in\R$. Dann folgt $X_n\nto{P}{n\to\infty}c$.
+
+\paragraph{Beweis:} 
+\begin{equation*}F(t)=
+	\begin{cases}
+	   1, \ \ \ \ \ \text{if }t\geq  c\\
+	   0, \ \ \ \ \ \text{if }t<  c
+	\end{cases}
+\end{equation*}
+ist stetig auf $\R \setminus\{c\}$ und damit stetig in $c\pm\varepsilon$ f\"ur alle $\varepsilon>0$. Also gilt
+\begin{align*}
+    \Pp(|X_n-X|>\varepsilon)&=\Pp(|X_n-c|>\varepsilon)\\
+    &=\Pp(X_n-c\notin[-\varepsilon,\varepsilon]) \\
+	&=1-\Pp(X_n-c\in[-\varepsilon,\varepsilon]) \\
+	&\leq1-F_n(c+\varepsilon)+F_n(c-\varepsilon) \nto{}{n\to\infty}1-F(c+\varepsilon)+F(c-\varepsilon)=0
+\end{align*}
+Damit folgt $X_n\nto{P}{n\to\infty}X\overset{a.s.}{=}c$. \qed
+
+
+\paragraph{11.4. Satz (von Glivenko\textendash Cantelli):} Seien $X_n, n\geq 1$ i.i.d.reellwertige Zufallsvariablen mit cdf $F$. Definiere die empirical cdf:
+    $$\hat{F}_n(t):=\dfrac{1}{n}\sum_{i=1}^n\ind{\{X_i\leq t\}}$$
+f\"ur alle $\omega\in\Omega$. Dann gilt:
+	$$\sup_{t\in\R}|\hat{F}_n(t)-F(t)|\nto{a.s.}{n\to\infty}0$$
+
+\paragraph{Beweis:} Zeige zuerst, dass $\sup_{t\in\R}|\hat{F}_n(t)-F(t)|$ messbar ist. W\"ahle dazu $t_k\in\R,k\geq 1$, sodass 
+	$$|\hat{F}_n(t_k)-F(t_k)|\geq\sup_{t\in\R}|\hat{F}_n(t)-F(t)|-\dfrac{1}{k}$$
+Beachte, dass $t_k$ von $\omega$ abh\"angt! W\"ahle nun $q_k\in\mathbb{Q},k\geq1$, sodass
+	$$|\hat{F}_n(q_k)-F(q_k)|\geq | \hat{F}_n(t_k)-F(t_k)|-\dfrac{1}{k}$$
+Dieser Schritt funktioniert wegen der rechtsseitigen Stetitgkeit von $F,\hat{F}_n,n\geq 1$. Nun folgt aber 
+	$$|\hat{F}_n(q_k)-F(q_k)|\geq\sup_{t\in\R}|\hat{F}_n(t)-F(t)|-\dfrac{2}{k}$$
+und damit 
+	$$|\hat{F}_n(q_k)-F(q_k)|\nto{}{k\to\infty}\sup_{t\in\R}|\hat{F}_n(t)-F(t)|$$
+Also 
+	$$\sup_{q\in\mathbb{Q}}|\hat{F}_n(q)-F(q)|=\sup_{t\in\R}|\hat{F}_n(t)-F(t)|$$
+wobei die linke Seite als abz\"ahlbares Supremem messbarer Funktionen messbar ist. \newline
+Setze nun $F(-\infty)=\hat{F}_n(-\infty)=0$ und $F(\infty)=\hat{F}_n(\infty)=1$ und w\"ahle ein Mesh$$-\infty=t_0<t_1<\hdots<t_{k-1}<t_k=+\infty$$
+sodass 
+\begin{equation}
+    F(t_{j-})-F(t_{j-1})\leq\varepsilon 
+\end{equation}
+f\"ur $1\leq j\leq k$. Dazu verf\"ahrt man folgenderma\ss{}en:\newline
+Beginne mit $t_0=-\infty$. Angenommen wir haben schon $j-1\geq 0$ Punkte gew\"ahlt, sodass (1) f\"ur alle $i\leq j-1$ gilt und $t_{j-1}<\infty$. Setze dann
+    $$t_j:=\sup \left\{ t>t_{j-1}:F(t_-)-F(t_{j-1})<\varepsilon\right\}$$
+Mit der Stetigkeit von oben gilt dann $F(t_-)-F(t_{j-1})=\Pp(t_{j-1}<X<t)\nto{}{t\searrow t_{j-1}}0$. Damit ist $t_j$ wohldefiniert. Falls $t_j=\infty$ sind wir fertig. Andernfalls wiederholt man die Prozedur f\"ur $j+1$. Wir haben am Schluss also Punkte $(t_j)_{0\leq j\leq k}$ f\"ur die gilt:
+\begin{align*}
+	F(t_{j-})-F(t_{j-1})\leq\varepsilon \\
+	F(t_j)-F(t_{j-1})\geq\varepsilon
+\end{align*}
+Da $F(\infty)-F(-\infty)=1$, gilt $k\varepsilon\leq 1$ und damit $k<\left\lfloor\frac{1}{\varepsilon}\right\rfloor$, also endet die Prozedur immer in endlich vielen Schritten.\newline
+Zeige nun, dass die empirische cdf gleichm\"a\ss{}ig in $t\in\R$ gegen die tats\"achliche cdf konvergiert. Mit dem SLLN gilt 
+\begin{align}
+    \hat{F}_n(t_j)&\nto{a.s.}{n\to\infty}F(t_j) \\
+	\hat{F}_n(t_{j-})&\nto{a.s.}{n\to\infty}F(t_{j-})
+\end{align}
+Sei also $N_\varepsilon$, so dass f\"ur alle $\omega\in N_\varepsilon^c$ (2) und (3) gelten. F\"ur jedes $t\in\R$ gibt es $1\leq j\leq k $, sodass $t\in[t_{j-1},t_j)$ und es gilt		
+\begin{align*}
+    \hat{F}_n(t)-F(t)&\stackrel{\text{Monotonie}}{\leq}\hat{F}_n(t_{j-})-F(t_{j-1}) =\\ 
+    &=\hat{F}_n(t_{j-})-F(t_{j-})+F(t_{j-})-F(t_{j-1})\leq \\
+    &\leq \hat{F}_n(t_{j-})-F(t_{j-})+\varepsilon
+\end{align*}
+und
+\begin{align*}
+    \hat{F}_n(t)-F(t)&\stackrel{\text{Monotonie}}{\geq}\hat{F}_n(t_{j-1})-F(t_{j-})= \\
+    &=\hat{F}_n(t_{j-1})-F(t_{j-1})+F(t_{j-1})-F(t_{j-})\geq \\
+    &\geq \hat{F}_n(t_{j-1})-F(t_{j-1})-\varepsilon
+\end{align*}
+
+Damit folgt
+\begin{align*}
+    &\limsup_{n\to\infty}\sup_{t\in\R}\left(
+    \hat{F}_n(t_{j-})-F(t)\right)\leq\limsup_{n\to\infty}\max\left\{\hat{F}_n(t_{j-1})-F(t_{j-1}\leq j\leq k)\right\}+\varepsilon \\
+    &\liminf_{n\to\infty}\inf_{t\in\R}\left(\hat{F}_n(t_{j-})-F(t)\right)\geq\liminf_{n\to\infty}\min\left\{\hat{F}_n(t_{j-1})-F(t_{j-1}\leq j\leq k)\right\}-\varepsilon
+\end{align*}
+Weil $\varepsilon>0$ beliebig war, folgt
+	$$\liminf_{n\to\infty}\inf_{t\in\R}\left(\hat{F}_n(t_{j-})-F(t)\right)=\limsup_{n\to\infty}\sup_{t\in\R}\left(\hat{F}_n(t_{j-})-F(t)\right)=0$$
+und damit
+	$$\lim_{n\to\infty}\sup_{t\in\R}|\hat{F}_n(t)-F(t)|=0$$
+f\"ur alle $\omega\in\displaystyle\bigcup_{\varepsilon>0}N_\varepsilon^c=\bigcup_{n\geq1}N_n^c$ mit
+Ma\ss{} 0. \qed
+\newline\newline
+
+\textbf{Bemerkung:} F\"ur eine Klasse von Funktionen $\mathcal{F}$, sei 
+\begin{align*}
+    \forall f\in\mathcal{F}:  \ \ &\hat{F}_n(f):=n^{-1}\sum_{i=1}^nf(X_i)\\
+    &F(f):=\E[f(X_1)]
+\end{align*}
+Im Fall von Satz 11.4 war z.B.$\mathcal{F}=\left\{\ind{(-\infty,t]}(\cdot),t\in\R\right\}$. Im allgemeinen Fall geben Glivenko-Cantelli Theoreme Bedinungen an die Klasse $\mathcal{F}$, sodass 
+    $$\sup_{f\in\mathcal{F}}|\hat{F}_n(f)-F(f)|\nto{a.e.}{n\to\infty}0$$
+
+
+\paragraph{11.5. Satz (Portemanteau Theorem 1):} Es gilt $X_n\nto{d}{n\to\infty}X$ genau dann, wenn eine der folgenden Bedingungen erf\"ullt ist:
+\begin{enumerate}[label=(\roman*)]
+    \item $\E f(X_n)\nto{}{n\to\infty}\E f(X)$ f\"ur alle $f$ stetig mit kompaktem Tr\"ager.
+    \item $\E f(X_n)\nto{}{n\to\infty}\E f(X)$ f\"ur alle $f$ stetig und beschr\"ankt.
+\end{enumerate}
+
+\textbf{Bemerkung:} Ist $f$ stetig und $\overline{\operatorname{supp}f}$ kompakt, dann ist $f$ auch beschr\"ankt. Damit gilt trivial (ii)$\implies $(i).
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*. ]
+    \item $X_n\nto{d}{n\to\infty}X\implies$(i) \newline
+    Sei $f$ wie in (i). Dann ist $f$ auf $\operatorname{supp}f$ auch gleichm\"a\ss{}ig stetig. F\"ur $\varepsilon>0$ w\"ahle ein Mesh    
+        $$a_0<a_1<\hdots<a_{k-1}<a_k$$
+		sodass 
+    \begin{align*}
+        \forall x\notin(a_0,a_k]:&f(x)=0 \\
+        \forall x\in(a_{i-1},a_i]:&|f(x)-f(a_i)|<\varepsilon \ \ \ \ \text{f\"ur } 1\leq i\leq k 
+	\end{align*}
+    und so, dass $a_o,\hdots,a_k$ alle Stetigkeitsstellen von $F$ sind (davon
+    gibt es h\"ochstens abz\"ahlbar viele, also ist das ohne Probleme m\"oglich).\newline
+	Definiere
+        $$g_\varepsilon(x):=\sum_{i=1}^kf(a_i)\ind{(a_{i-1},a_i]}(x)$$
+	sodass 
+    \begin{gather}
+        \sup_{x\in\R}|f(x)-g_\varepsilon(x)|\leq\varepsilon
+	\end{gather}
+	Dann gilt 
+    \begin{align*}
+	   \E g_\varepsilon(X_n)&=\sum_{i=1}^kf(a_i)\Pp(a_{i-1}<X_n\leq a_i)= \\
+        &=\sum_{i=1}^kf(a_i)(F_n(a_i)-F_n(a_{i-1}))\nto{}{n\to\infty}\sum_{i=1}^kf(a_i)(F(a_i)-F(a_{i-1}))=\E g_\varepsilon(X)
+    \end{align*}
+    und mit (4) folgt $\forall\varepsilon>0: f\leq g_\varepsilon+\varepsilon$ und $g_\varepsilon\leq f+\varepsilon$ und damit
+	\begin{gather*}
+        \limsup_{n\to\infty}\E f(X_n)\leq\limsup_{n\to\infty}\E g_\varepsilon(X_n)+\varepsilon=\E g_\varepsilon(X)+\varepsilon\leq\E f(X)+2\varepsilon \\
+		\liminf_{n\to\infty}\E f(X_n)\geq\limsup_{n\to\infty}\E g_\varepsilon(X_n)-\varepsilon=\E g_\varepsilon(X)-\varepsilon\geq\E f(X)-2\varepsilon
+    \end{gather*}
+    und f\"ur $\varepsilon\to0$ folgt, dass 
+        $$\E f(X_n)\nto{}{n\to\infty}\E f(X)$$
+    
+    \item (i)$\implies$(ii)\newline
+    Sei $f$ wie in (ii). F\"ur $M>1$ definiere eine stetige Funktion $g_M$ mit kompaktem Tr\"ager, wie folgt: \newline \newline
+    \begin{tikzpicture}[
+        declare function = {
+            func(\x)=(\x<=(-6)) * 0 +
+            and(\x>(-6), \x<=(-3)) * (1/3*\x+2) +
+            and(\x>(-3), \x<=3) * 1 +
+            and(\x>3, \x<=6) * ((-\x)/3+2) +
+            (\x>6) * 0;
+            }
+        ]
+        \begin{axis}[
+            axis lines = left,
+            xlabel = \(x\),
+            ylabel = {\(g_M(x)\)},
+            xtick = {-6,-3,3,6},
+            xticklabels = {$-(M+1)$,$-M$,$M$,$M+1$},
+            ytick = {0,1},
+            yticklabels = {0,1},
+            width = 14cm,
+            height = 5cm,
+            ymin = 0,
+            ymax = 1.1,
+            domain=-7:7
+            ]
+            \addplot[color = red, domain=-7:7, samples=100]{func(x)};
+        \end{axis}
+    \end{tikzpicture}
+    \newline
+    Also $g_M(x):=
+            \begin{cases}
+                0 \ \text{if } x\notin(-M-1,M+1]\\
+                1 \ \text{if } x\in(-M,M]\\
+                x+(M+1) \ \text{if } x\in(-M-1,-M]\\
+                (M+1)-x \ \text{if } x\in(M,M+1]
+            \end{cases}$
+    \newline\newline\newline
+    W\"ahle nun $M$ gro\ss{} genug, sodass $|1-\E g_M(X)|<\eps$ (m\"oglich wegen $g_M(x)\nto{}{M\to\infty}1$ und MONK). Die Funktion $f_M:=f\cdot g_M$ ist dann stetig, beschr\"ankt und hat kompakten Tr\"ager (einfache \"uberlegung). Weiters folgt
+    \begin{align*}
+        \big|\E f(X_n)-\E f(X)\big| &=\big| \E \left[f(X_n)-f_M(X_n)+f_M(X_n)-f_M(X)+f_M(X)-f(X)\right]\big| \leq \\
+        &\leq \big|\E f(X_n)-\E f_M(X_n)\big|+\big|\E f_M(X_n)-\E f_M(X)\big|+\big|\E f_M(X)-f(X)\big|
+    \end{align*}
+    Betrachte nun der Reihe nach alle drei Summanden
+    \begin{align*}
+        \big|\E f(X_n)-f_M(X_n)\big|&\leq\Vert f\Vert_\infty\big|\E[1-g_M(X_n)]\big|\nto{}{n\to\infty}\Vert f\Vert_\infty\big|\E[1-g_M(X)]\big|\leq\eps\cdot\Vert f\Vert_\infty
+    \end{align*}
+    \begin{align*}
+        \big|\E [f_M(X_n)-f_M(X)]\big|\nto{\text{Ann.}}{n\to\infty}0
+    \end{align*}
+    \begin{align*}
+        \big|\E f(X)-f_M(X)\big|\overset{\text{s.o.}}{\leq}\eps \cdot\Vert f\Vert_\infty
+    \end{align*}
+    Damit folgt
+    $$0\leq\limsup_{n\to\infty}\big|\E[f(X_n)-f(X)]\big|\leq2\eps$$
+    und da $\eps>0$ beliebig war auch die Aussage.
+
+    \item (ii)$\implies X_n\nto{d}{n\to\infty}X$\newline
+    F\"ur $t\in\R$ definiere stetige, beschr\"ankte Funktionen $f_\eps^-$ und $f_\eps^+$ wie folgt: \newline \newline
+    \begin{tikzpicture}
+        \begin{axis}[
+            axis lines = left,
+            xlabel = \(x\),
+            ylabel = {\(f_\eps^+(x),f_\eps^-(x)\)},
+            xtick = {0,3,6},
+            xticklabels = {$t-\eps$,$t$,$t+\eps$},
+            ytick = {0,1},
+            yticklabels = {0,1},
+            width = 14cm,
+            height = 5cm,
+            ymin = 0,
+            ymax = 1.1,
+            domain=-7:7
+            ]
+            \addplot[color = red, domain=-7:7, samples=100]{(\x<=3) * 1 +
+            and(\x>3, \x<=6) * ((-\x)/3+2) +
+            (\x>6) * 0};
+            \addplot[color = blue, domain=-7:7,samples=100]{(\x<=0) * 1 +
+            and(\x>0, \x<=3) * ((-\x)/3+1) +
+            (\x>3) * 0};
+            \legend{$f_\eps^+$,$f_\eps^-$};
+        \end{axis}
+    \end{tikzpicture}
+    \newline      
+    Dann ist $f_\eps^-\leq\ind{(-\infty,t]}\leq f_\eps^+$ und damit 
+    $$\E f_\eps^-(X_n)\leq F_n(t)\leq \E f_\eps^+(X_n)$$
+    f\"ur alle $n\geq1$. Es folgt mit DOMK 
+    $$\E f_\eps^-(X)\leq \liminf_{n\to\infty}F_n(t)\leq \limsup_{n\to\infty}F_n(t)\leq \E f_\eps^+(X)$$
+    Aber 
+    \begin{align*}
+        &\E f_\eps^-(X)\geq\E[\ind{(-\infty,t-\eps]}(X)]=F(t-\eps) \\
+        &\E f_\eps^-(X)\leq\E[\ind{(-\infty,t+\eps]}(X)]=F(t+\eps)
+    \end{align*}
+    Wenn $F$ also stetig im Punkt $t$ ist, folgt $F_n(t)\nto{}{n\to\infty}F(t)$. \qed
+\end{enumerate}
+
+\paragraph{11.6. Satz (Portemanteau Theorem 2):} Es gilt $X_n\nto{d}{n\to\infty}X$ genau dann, wenn eine der folgenden Bedingungen zutrifft:
+\begin{enumerate}[label=(\roman*)]
+    \item F\"ur $O\subseteq\R$ offen ist $\Pp(X\in O)\leq\displaystyle\liminf_{n\to\infty}\Pp(X_n\in O)$.
+    \item F\"upr $A\subseteq\R$ abgeschlossen ist $\Pp(X\in A)\geq\displaystyle\limsup_{n\to\infty}\Pp(X_n\in A)$.
+    \item F\"ur $B\in\borel$ mit $\Pp(X\in\partial B)=0$ gilt $\Pp(X_n\in B)\nto{}{n\to\infty}\Pp(X\in B)$.
+\end{enumerate}
+
+\paragraph{Beweis:} (i)$\iff$(ii) folgt sofort aus $O$ offen$\iff O^c$ abgeschlossen.
+\begin{enumerate}[label=\Roman*.]
+    \item $X_n\nto{}{n\to\infty}X\implies$(i)\newline
+    Sei $O\subseteq\R$ offen und w\"ahle stetige und beschr\"ankte Funktionen (einfache Überlegung, Hinweis: Jede offene Teilmenge von $\R$ ist eine abzählbare Vereinigung offener Intervalle) $f_m, m\geq 1$, sodass
+    $$0\leq f_1\leq\hdots\leq\lim_{m\to\infty}f_m=\ind{O}$$
+    Es folgt mit Portemanteau 1 (Satz 11.5)
+    $$\forall m\geq1:\E f_m(X)=\lim_{n\to\infty}\E f_m(X_n)\leq\liminf_{n\to\infty}\Pp(X_n\in O)$$
+    und damit
+    $$\Pp(X\in O)=\E \ind{O}(X)\overset{\text{MONK}}{=}\lim_{m\to\infty}\E f_m(X)\overset{\text{s.o.}}{\leq}\lim_{m\to\infty}\liminf_{n\to\infty}\Pp(X_n\in O)=\liminf_{n\to\infty}\Pp(X_n\in O)$$
+   \item (i),(ii)$\implies$(iii)\newline
+   Sei $B\in\borel$ mit $\Pp(X\in\partial B)=0$. Dann ist
+   $$\Pp(X\in B\setminus\del B)=\Pp(X\in\text{int}(S))=\Pp(X\in\text{clos}(S))=\Pp(X\in S)$$
+   und damit
+   \begin{align*}
+       &\Pp(X\in B)=\Pp(X\in\text{clos}(B))\overset{\text{(ii)}}{\geq}\limsup_{n\to\infty}\Pp(X_n\in\text{clos}(B))\geq\limsup_{n\to\infty}\Pp(X_n\in B) \\
+       &\Pp(X\in B)=\Pp(X\in\text{int}(B))\overset{\text{(i)}}{\leq}\liminf_{n\to\infty}\Pp(X_n\in\text{int}(B))\leq\liminf_{n\to\infty}\Pp(X_n\in B) 
+   \end{align*}
+   und damit $$\Pp(X_n\in B)\nto{}{n\to\infty}\Pp(X\in B)$$
+   \item (iii)$\implies X_n\nto{d}{n\to\infty}X$\newline
+   F\"ur $B=(-\infty, t]$ ist $\Pp(X_n\in B)=F_n(t)$ und $\del B=\{t\}$. Wenn $F$ also stetig in $t$ ist, folgt die Aussage. \qed
+\end{enumerate}
+
+\paragraph{11.7. Satz (Slutsky's Theorem):} Wenn $X_n\nto{d}{n\to\infty}X$ und $Z_n\nto{d}{n\to\infty}Z$, mit $\Pp(Z=c)=1$, dann gilt:
+\begin{enumerate}[label=(\roman*)]
+    \item $X_n+Z_n\nto{d}{n\to\infty}X+c$
+    \item $X_nZ_b\nto{d}{n\to\infty}Xc$
+    \item Falls $c\neq0$: $\displaystyle\frac{X_n}{Z_n}\nto{d}{n\to\infty}\frac{X}{c}$
+\end{enumerate}
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=(\roman*)]
+    \item Wenn $t$ Stetigkeitspunkt der Verteilung von $X+c$ ist, dann ist $t-c$ Stetigkeitspunkt der Verteilung von $X$, also 
+    $$\lim_{x\nearrow t}\Pp(X\leq x-c)=\lim_{x\nearrow c}\Pp(X+c\leq x)\overset{\text{Ann.}}{=}\Pp(X+c\leq t)=\Pp(X\leq t-c)$$
+    Damit folgt $X_n+c\nto{d}{n\to\infty}X+c$ f\"ur $c\in\R$. \newline
+    Sei also $f:\R\to\R$ stetig mit kompaktem Tr\"ager. Dann ist $f$ beschr\"ankt und gleichm\"a\ss{}g stetig. Sei $\eps>0$ und w\"ahle $\delta>0$, sodass
+    $$\forall x,y\in\R:|x-y|<\delta\implies|f(x)-f(y)|<\eps$$
+    Dann gilt
+    \begin{align*}
+        \big|\E f(X_n+Z_n)-\E f(X_n+c)\big|&\leq\E\big|f(X_n+Z_n)-f(X_n+c)\big|=\\
+        &=\E\left[\big|f(X_n+Z_n)-f(X_n+c)\big|\ind{|Z_n-c|\geq\delta}\right]\\&+\E\left[\big|f(X_n+Z_n)-f(X_n+c)\big|\ind{|Z_n-c|<\delta}\right]\leq\\
+        &\leq\eps+2\Vert f\Vert_\infty\cdot\Pp(|Z_n-c|\geq\delta)\nto{}{n\to\infty}\eps
+    \end{align*}
+    F\"ur $\eps\searrow 0$ und mit $X_n+c\nto{d}{n\to\infty}X+c$ folgt die Aussage mit Portememanteau 1 (Satz 11.5).
+    \item Zeige zuerst den Fall wo $c=0$: \newline 
+    Hier gen\"ugt es mit Proposition 11.3 zu zeigen, dass $X_nZ_n\nto{P}{n\to\infty}0$. F\"ur $\eps>0$ gilt
+    \begin{align*}
+        &\Pp(|X_nZ_n|>\eps)\\
+        &=\Pp(|X_nZ_n|>\eps,|Z_n|>\delta)+\Pp(|X_nZ_n|>\eps,|Z_n|\leq\delta)\\
+        &\leq\Pp(|X_nZ_n|>\eps,|Z_n|\leq\delta)+\Pp(|Z_n|>\delta)\\
+        &=\Pp(X_n<-\eps/\delta)+[1-\Pp(X_n\leq\eps/\delta)]+\Pp(|Z_n|>\delta) \\
+        &\leq F_n(-\eps/\delta)+1-F_n(\eps/\delta)+\Pp(|Z_n|>\delta)
+    \end{align*}
+    Wir k\"onnen nun $\delta>0$ so w\"ahlen, dass $F$ in den Punkten $\pm\eps/\delta$ stetig ist. Dann folgt
+    $$\limsup_{n\to\infty}\Pp(|X_nZ_n|>\eps)\leq F(-\eps/\delta)+[1-F(\eps/\delta)]$$
+    und f\"ur $\delta\searrow0$ folgt die gew\"unschte Aussage.\newline
+    Zeige nun den Fall wo $c\neq0$: \newline
+    Schreibe dazu $X_nZ_n=X_n(Z_n-c)+X_nc$. Es gilt $X_nc\nto{d}{n\to\infty}Xc$ (einfach zu pr\"ufen) und $(Z_n-c)\nto{P}{}0$. Mit dem ersten Fall folgt
+    $$X_n(Z_n-c)\nto{P/d}{}0$$
+    Mit (i) folgt also 
+    $$X_nZ_n=X_n(Z_n-c)+X_nc\nto{d}{n\to\infty}Xc$$
+    \item Die Abbildung $t\mapsto 1/t$ ist steig auf $\R\setminus \{0\}$ und damit gilt 
+    $$\frac{1}{Z_n}\nto{P}{n\to\infty}\frac{1}{c}$$
+    Mit (ii) folgt damit die Aussage. \qed
+\end{enumerate}
+
+\paragraph{11.8. Satz (Continuous Mapping Theorem, CMT):} Seien $X_n,n\geq 1$ und $X$ Zufallsvariablen, sodass $X_n\nto{d}{n\to\infty}X$ und sei $h:\R\to\R$ eine Abbildung, sodass es $H\in\borel$ gibt, mit $H\subseteq C(h)$ und $\Pp(X\in H)=1$. Dann folgt
+$$h(X_n)\nto{d}{n\to\infty}h(X)$$
+
+\paragraph{Beweis:} Sei $A\subseteq\R$ abgeschlossen. Dann gilt
+$$h^{-1}A\subseteq\text{clos}(h^{-1}A)\overset{\dag}{\subseteq}h^{-1}A\cup H^c$$
+$\dag$ folgt mit einer kurzen \"uberlegung aus der Tatsache, dass Urbilder abgeschlossener Mengen unter stetigen Funktionen wieder abgeschlossen sind. \newline\newline
+Damit folgt nun
+\begin{align*}
+    \limsup_{n\to\infty}\Pp(h(X_n)\in A)&=\limsup_{n\to\infty}\Pp(X_n\in h^{-1}A)\\
+    &\leq \limsup_{n\to\infty}\Pp(X_n\in\text{clos}(h^{-1}A))\\
+    &\overset{\text{PMT2}}{\leq}\Pp(X\in h^{-1}A) \\
+    &\leq\Pp(X\in h^{-1}A\cup H^c)\\
+    &\leq\Pp(X\in h^{-1}A)+\Pp(X\in H^c)\\
+    &=\Pp(X\in h^{-1}A)=\Pp(h(X)\in A)
+\end{align*}
+und da $A$ eine beliebige abgeschlossene Teilmenge von $\R$ war folgt mit PMT2 (Satz 11.6), dass
+$$h(X_n)\nto{d}{n\to\infty}h(X)$$
+\qed
+
+\paragraph{11.9. Proposition ($\delta$-Methode):} F\"ur eine Folge von Zufallsvariablen $X_n,n\geq1$ mit $$\sqrt{n}(X_n-\mu)\nto{d}{n\to\infty}\mathcal{N(0,\sigma^2)}$$
+und eine Abbildung $f:\R\to\R$, die stetig im Punkt $\mu$ ist, gilt
+$$\sqrt{n}(f(X_n)-f(\mu))\nto{d}{n\to\infty}\mathcal{N}(0,(f'(\mu))^2\sigma^2)$$
+Eine hinreichende Bedingung an die $X_n,n\geq1$ w\"are z.B., dass sie einen zentralen Grenzwertsatz (siehe S\"atze 11.25, 11.26, 11.27) erf\"ullen.
+
+\paragraph{Beweis:}Betrachte die Abbildung $g:\R\to\R$ mit 
+\begin{align*}
+    x\mapsto
+\begin{cases}
+    f'(\mu)-\dfrac{f(x)-f(\mu)}{x-\mu} &\text{ if }x\neq\mu \\
+    0 &\text{ if } x=\mu
+\end{cases}
+\end{align*}
+Da $f'(\mu)$ existiert ist $g$ stetig im Punkt $\mu$ (Definition der Ableitung). Dann gilt 
+$$f(x)-f(\mu)=f'(\mu)(x-\mu)-g(x)(x-\mu)$$
+und damit
+$$\sqrt{n}(f(X_n)-f(\mu))=f'(\mu)\sqrt{n}(X_n-\mu)-g(X_n)\sqrt{n}(X_n-\mu)=:A_n-B_n$$
+Mit Slutsky's Theorem (Satz 11.7. (ii)) und dem Reproduktionssatz folgt sofort $A_n\nto{d}{n\to\infty}\mathcal{N}(0,(f'(\mu))^2\sigma^2)$. Es gen\"ugt mit Slutky's Theorem (Satz 11.7. (i)) also zu zeigen, dass $B_n\nto{P}{n\to\infty}0$. \newline\newline
+Sei $Z\sim\mathcal{N}(0,\sigma^2)$. Dann gilt (einfache \"uberlegung) $X_n-Z\nto{P}{n\to\infty}0$. Da $g$ stetig in $\mu$ ist, gilt mit dem Continuous Mapping Theorem (Satz 11.8) $g(X_n)\nto{P}{n\to\infty}g(\mu)=0$. Dann folgt erneut mit Slutsky's Theorem $B_n\nto{P/d}{n\to\infty}0$ und damit die Behauptung. \qed
+
+\paragraph{11.10. Satz} Seien $X_n,n\geq 1$ gleichgradig integrierbar und $X_n\nto{d}{n\to\infty}X$. Dann folgt $X\in L_1$ und $\E X_n\nto{}{n\to\infty}\E X$.
+
+% Hier im Beweis fehlt noch der allgemeine Fall aus der Email (Handout 6, Details zu Satz 11.9!)
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*.]
+    \item $X_n,n\geq0$ und $X$ alle nicht-negativ\newline 
+    Aus der gleichgradigen Integrierbarkeit folgt mit Lemma 9.2
+    $$\displaystyle\limsup_{n\to\infty}\E|X_n|=B<\infty$$
+    F\"ur alle $M>1$ definiere $g_M(\cdot)$ wie im Beweis von Satz 11.5 (PMT1, Teil II). Dann ist $g_M$ stetig, beschr\"ankt und hat kompakten Tr\"ager. Also ist die Abbildung mit $t\mapsto t\cdot g_M(t)$ stetig mit kompaktem Tr\"ager und es gilt $\forall m\geq1$
+    $$0\leq\E[Xg_M(X)]\overset{\text{PMT1}}{=}\lim_{n\to\infty}\E[X_ng_M(X_n)]\overset{g_M\leq1}{\leq}\limsup_{n\to\infty}\E X_n\leq\limsup_{n\to\infty}\E |X_n|=B<\infty$$
+    Gleichzeitig gilt aber
+    $$0\leq Xg_1(X)\leq\hdots\leq\lim_{M\to\infty}Xg_M(X)=X$$
+    und mit MONK % MONK ODER DOMK?
+    $$0\leq\E X=\lim_{M\to\infty}\E[Xg_M(X)]\leq B$$
+    und da $\E X=\E|X|$, folgt $X\in L_1.$ \newline\newline
+    Zeige nun die Konvergenz:
+    \begin{align*}
+        \big|\E X_n-\E X\big|&=\big|\E[X_ng_M(X_n)-X+X_n-X_ng_M(X_n)]\big|\\
+        &\leq\big|\E[X_ng_M(X_n)]-\E X\big|+\E|X_n|\big|1-g_M(X_n)\big| \\
+        &\leq\big|\E[X_ng_M(X_n)]-\E X\big|+\E|X_n|\cdot\ind{\{|X_n|\geq M\}}
+    \end{align*}
+    Damit folgt mit PMT1
+    $$\limsup_{n\to\infty}|\E X_n-\E X|\leq\big|\E[Xg_M(X)]-\E X\big|+\limsup_{n\to\infty}\E|X_n|\cdot\ind{\{|X_n|\geq M\}}$$
+    und f\"ur $M\to\infty$
+    $$\limsup_{n\to\infty}|\E X_n-\E X|\leq\limsup_{M\to\infty}\big|\E Xg_M(X)-\E X\big|+\limsup_{M\to\infty}\limsup_{n\to\infty}\E|X_n|\cdot\ind{\{|X_n|\geq M\}}=0$$
+    % MONK ODER DOMK?
+    wobei die letzte Gleichung mit MONK und der Def. von  gleichgradiger Integrierbarkeit folgt.
+    \item allgemeiner Fall\newline
+    Die Abbildung mit $t\mapsto\max(t,0)$ ist stetig auf $\R$, sodass mit dem Continuous Mapping Theorem (Satz 11.8) für $X^+:=\max(X,0)$ und $X_n^+:=\max(X_n,0)$ gilt
+    $$X_n^+\nto{d}{n\to\infty}X^+$$
+    Da $0\leq X_n^+\leq|X_n^+|$ und die $X_n,n\geq1$ gleichgradig integrierbar sind, sind auch die $X_n^+,n\geq1$ gleichgradig integrierbar. Mit dem I. Fall folgt 
+    $$\E X_n^+\nto{}{n\to\infty}\E X^+$$
+    Dasselbe gilt für den Negativteil und es folgt
+    $$\E X_n\nto{}{n\to\infty}\E X$$
+    mit den Rechenregeln für Konvergenz von Folgen reeler Zahlen. \qed
+\end{enumerate}
+
+\section*{Schwach konvergente Teilfolgen}
+\addcontentsline{toc}{section}{Schwach konvergente Teilfolgen}
+Erinnerung Analysis: Jede Folge reeller Zahlen $a_n,n\geq1$ enth\"alt eine Teilfolge $a_{n_i},i\geq1$, die gegen einen Grenzwert $\alpha\in\overline{\R}$ konvergiert, i.e. $\alpha=\lim_{i\to\infty}a_{n_i}\in\overline{\R}$. Falls $a_n,n\geq1$ zus\"atzlich beschr\"ankt ist, dann gilt $\alpha\in\R$. \"ahnliches gilt f\"ur Wahrscheinlichkeitsma\ss{}e. \newline
+Reimnder: $b_n,n\geq1$ ist eine Teilfolge von $a_n,n\geq1$, falls eine bijektive, streng monoton steigende Abbildung $f:\mathbb{N}\to\mathbb{N}$ existiert, sodass $b_n=a_{f(n)}$ f\"ur alle $n\geq1$.
+
+\paragraph{11.11. Satz (Helly's Selection Theorem):} Sei $F_n,n\geq1$ eine Folge von Verteilungsfunktionen (cdfs). Dann existiert eine Teilfolge $F_{n_i},i\geq1$ und eine monoton-nichtfallende rechtsstetige Funktion $F:\R\to\R$ mit linksseitigen Grenzwerten (cádlág), sodass 
+$$\forall t\in C(F):F_{n_i}(t)\nto{}{i\to\infty}F(t)$$
+Dabei ist aber \underline{nicht} garantiert, dass $F$ auch eine cdf ist (also $\displaystyle\lim_{t\to\infty}F(t)=1, \lim_{t\to-\infty}F(t)=0$)!
+
+\paragraph{Beweis:}Ordne $\mathbb{Q}=\{q_1,q_2,\hdots\}$ und w\"ahle aus der vollen Folge $n=1,2,3,\hdots$ eine erste Teilfolge $n_i(1),i\geq1$, sodass $F_{n_i(1)}(q_1)$ f\"ur $i\to\infty$ kovergiert (m\"oglich da $F_n\leq1$, cf. Anmerkung unter der Unter\"uberschrift). \newline
+W\"ahle nun eine weitere (Teil-)Teilfolge $n_i(2),i\geq1$, sodass $F_{n_i(2)}(q_2)$ f\"ur $i\to\infty$ konvergiert. \newline
+$\vdots$\newline
+F\"ur die $k$-te Teilfolge $n_i(k),i\geq1$ existieren dann die Grenzwerte 
+$$\lim_{i\to\infty}F_{n_i(k)}(q_\ell), \  \ell=1,\hdots,k$$
+Setze nun $n_i:=n_i(i)$ f\"ur $i\geq1$. Dann konvergiert $F_{n_i}(q_\ell)$ f\"ur jedes $\ell\geq1$, da $n_i$ ab dem Index $i=\ell$ eine Teilfolge von $n_\ell(1)$ ist.
+% Hier bin ich mir nicht sicher ob n_i ab i=l eine TF von n_l(1) oder n_l(l) ist?$$
+Setze nun f\"ur $q\in\mathbb{Q}$
+$$G(q):=\lim_{i\to\infty}F_{n_i}(q)$$
+Dann ist $G:\mathbb{Q}\to[0,1]$ monoton-nichtfallend auf $\mathbb{Q}$, da jedes Element der Folge $F_{n_i}(q)$ monoton-nichtfallend ist. F\"ur $t\in\R$ definiere nun
+$$F(t):=\inf\{G(q):q\geq t,q\in\mathbb{Q}\}$$ 
+Als infimum einer nichtleeren Menge ist $F(t)$ damit f\"ur alle $t\in\R$ wohldefiniert und 
+\begin{enumerate}
+    \item $F$ ist monoton-nichtfallend auf $\R$, da
+    $$s\leq t\implies\{G(q):q\geq s,q\in\mathbb{Q}\}\supseteq\{G(q):q\geq t,q\in\mathbb{Q}\}$$
+    \item F ist rechtsstetig auf $\R$:\newline
+    Sei $\eps>0,t\in\R$. Dann gibt es mit der Greatest Lower Bound Property $q\in\mathbb{Q},q\geq t$, sodass
+    $$F(t)\leq G(q)\leq F(t)+\eps$$
+    da $\mathbb{Q}$ dicht in $\R$ liegt. Damit gilt 
+    $$\forall s\in[t,q]:F(t)\leq F(s)\leq F(q)=G(q)\leq F(t)+\eps$$
+    und f\"ur $\eps\searrow0$ folgt die Aussage.
+    \item $F_{n_i}\nto{}{n\to\infty} F$ auf $C(F)$:\newline
+    Sei $F$ stetig in $t$, und sei $\eps>0$. W\"ahle nun $\delta>0$, sodass
+    $$|t-s|<\delta\implies|F(t)-F(s)|<\eps$$
+    W\"ahle nun $r,q\in\mathbb{Q}$, sodass
+    $$t-\delta<r<t<q<t+\delta$$
+    und somit 
+    $$F(t)-\eps<F(r)\leq F(t)\leq F(q)<F(t)+\eps$$
+    Mit der Definition von $G$ und $F$ folgt nun 
+    $$F_{n_i}(r)\leq F_{n_i}(t)\leq F_{n_i}(q)$$
+    wobei die linke und rechte Schranke gegen $G(r)$ bzw. $G(q)$ konvergieren, also
+    $$F(t)-\eps<G(r)\leq\liminf_{i\to\infty}F_{n_i}(t)\leq\limsup_{i\to\infty}F_{n_i}(t)\leq G(q)<F(t)+\varepsilon$$
+    und f\"ur $\eps\searrow0$ folgt die Aussage. \qed
+\end{enumerate}
+
+\paragraph{11.12. Definition:} Eine Folge von Zufallsvariablen $X_n,n\geq 1$ ist \textit{stochastisch beschr\"ankt}, wenn gilt:
+$$\sup_{n\geq1}\Pp(|X_n|> M)\nto{}{M\to\infty}0$$
+Die entsprechende Folge der Ma\ss{}e/cdfs nennt man dann \textit{straff}.
+
+\paragraph{11.13. Lemma:} $X_n,n\geq1$ ist genau dann stochastisch beschr\"ankt, wenn gilt:
+\begin{equation}
+    \forall\eps>0\exists g:\R\to[0,\infty)\text{ messbar}:\limsup_{n\to\infty}\E g(X_n)\leq\eps\cdot\liminf_{|t|\to\infty}g(t)
+\end{equation}
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*.]
+    \item $\implies$ \newline
+    W\"ahle $a_0<a_1<\hdots$ mit $a_k\nto{}{k\to\infty}\infty$, sodass mit der stochastischen Beschr\"anktheit
+    $$\forall n\geq1:\Pp(|X_n|>a_k)<\left(\frac{1}{4}\right)^k$$
+    (Setze $\eps=4^{-k}$ und setze $a_k$ dann einfach gro\ss{} genug). Setze nun 
+    $$g(t):=\sum_{k\geq0}2^k\ind{(a_k,a_{k+1}]}(|t|)$$
+    Dann ist $g$ messbar (einfaches Argument) und $\displaystyle\liminf_{|t|\to\infty}g(t)=\infty$ (folgt z.B. aus $\liminf\geq\inf$). Weiters gilt
+    \begin{align*}
+        \forall n\geq1:\E g(X_n)&=\sum_{k\geq0}2^k\Pp(a_k<|X_n|\leq a_{k+1})\\
+        &\leq\sum_{k\geq0}2^k\Pp(|X_n|>a_k)\\
+        &\leq\sum_{k\geq0}2^k\frac{1}{4^k}=2<\infty
+    \end{align*}
+    Es gilt also $\forall\eps>0$
+    $$\limsup_{n\to\infty}\E g(X_n)\leq2\leq\infty=\eps\cdot\liminf_{|t|\to\infty}g(t)$$
+    \item $\impliedby$ \newline
+    Sei $\eps>0$ und w\"ahle $g$, sodass (5) gilt. 
+    $$\liminf_{|t|\to\infty}g(t)=\lim_{T\to\infty}\inf_{|t|>T}g(t)$$
+    wobei $\inf_{|t|>T}g(t)$ monoton nicht-fallend in $T$ ist. Mit der Annahme k\"onnen wir $T>0$ w\"ahlen, sodass
+    $$\limsup_{n\to\infty}\E g(X_n)\leq\eps\cdot\inf_{|t|>T}g(t)\leq\eps\cdot\liminf_{|t|\to\infty}g(t)$$
+    W\"ahle nun $c\in\R$, sodass 
+    $$\limsup_{n\to\infty}\E g(X_n)<c<\leq\eps\cdot\inf_{|t|>T}g(t)\leq\eps\cdot\liminf_{|t|\to\infty}g(t)$$
+    F\"ur $|t|>T$ ist dann $c<\eps g(t)$, bzw. $1<\eps g(t)/c$ und damit
+    \begin{align*}
+        \limsup_{n\to\infty}\Pp(|X_n|>T)&=\limsup_{n\to\infty}\E\left[1\cdot\ind{\{|X_n|>T\}}\right]\\
+        &\leq\limsup_{n\to\infty}\E\left[\dfrac{\eps g(X_n)}{c}\ind{\{|X_n|>T\}}\right]\\
+        &\leq\dfrac{\eps}{c}\cdot\limsup_{n\to\infty}\E g(X_n)<\eps
+    \end{align*}
+    Damit gibt es ein $n_0\in\mathbb{N}$, sodass f\"ur $n\geq n_0: \Pp(|X_n|>T)<\eps$. W\"ahle nun $S>0$ gro\ss{} genug, sodass f\"ur $n=1,\hdots,n_0-1: \Pp(|X_n|>S)<\eps$ und setze $M:=\max(S,T)$. Damit gibt es f\"ur jedes $\eps>0$ ein $M>0$, sodass
+    $$\forall n\geq1: \Pp(|X_n|>M)<\eps$$
+    und insbesondere $\displaystyle\sup_{n\geq1}\Pp(|X_n|>M)\nto{}{M\to\infty}0$.\qed
+\end{enumerate}
+
+\paragraph{11.14. Satz (Prokorov Theorem):} Betrachte eine Folge von cdfs $F_n,n\geq1$. Dann sind folgende Aussagen \"aquivalent:
+\begin{enumerate}[label=(\roman*)]
+    \item Die $F_n,n\geq1$ sind straff.
+    \item Jede Teilfolge $F_{n_i},i\geq1$ enth\"alt eine weitere Teilfolge $F_{n_{i_k}},k\geq1$, sodass 
+        $$F_{n_{i_k}}\nto{}{k\to\infty}F$$
+        f\"ur eine cdf $F$.
+        % geh\"ort hier Konvergenz in Stetigkeitspunkten oder punktweise?
+\end{enumerate}
+
+\paragraph{Beweis:}
+\begin{enumerate}[label=\Roman*.]
+    \item (i)$\implies$(ii)\newline
+    Helly's Selection Theorem (Satz 11.11) liefert uns eine Teilfolge $F_{n_{i_k}},k\geq1$ und eine monoton nicht-fallende cádlág Funktion $F$, sodass $F_{n_{i_k}}\nto{}{k\to\infty}F$. Zeige also 
+    $$F(t)\nto{}{t\to\infty}1\text{ und }F(t)\nto{}{t\to-\infty}0$$
+    Da die $F_n,n\geq1$ straff sind, kann man $M_\ell,\ell\geq1$ w\"ahlen, sodass
+    $$\sup_{n\geq1}\left[F_n(-M_\ell)+1-F_n(M_\ell)\right]\leq\sup_{n\geq1}\Pp(|X_n|>M_\ell)<\dfrac{1}{\ell}$$
+    O.B.d.A. seien $\pm M_\ell$ Stetigskeitspunkte und $M_\ell+1<M_{\ell+1}\nto{}{\ell\to\infty}\infty$ f\"ur alle $\ell\geq1$. Dann gilt $F_{n_{i_k}}(M_\ell)=1-[1-F_{n_{i_k}}(M_\ell)]>1-1/\ell$
+    und damit
+    $$\lim_{t\to\infty}F_n(t)=\lim_{\ell\to\infty}F(M_\ell)=\lim_{\ell\to\infty}\left(\lim_{k\to\infty}F_{n_{i_k}}(M_\ell)\right)\geq1$$
+    Da aber f\"ur alle $k\geq1$ $F_{n_{i_k}}(M_\ell)\leq1$ sind, folgt
+    $$\lim_{t\to\infty}F(t)=1$$
+    Ein \"ahnliches Argument funktionert f\"ur $\lim_{t\to-\infty}F(t)$.
+    \item (ii)$\implies$(i)\newline
+    Angenommen die $F_n,n\geq1$ sind nicht straff
+    \begin{equation}
+        \implies\exists\eps>0\forall M>0:\sup_{n\geq1}\Pp(|X_n|>M)\geq\eps
+    \end{equation}
+    W\"ahle nun $n_i,i\geq1$ so, dass
+    $$F_{n_i}(-i)+1-F_{n_i}(i)>\dfrac{\eps}{2}$$
+    Wegen (6) k\"onnen die $n_i,i\geq1$ monoton steigend gew\"ahlt werden. Laut Voraussetzung existiert nun eine weitere Teilfolge $F_{n_{i_k}},k\geq1$ und eine cdf $F$, sodass
+    $$F_{n_{i_k}}\nto{d}{k\to\infty}F$$
+    Weil $F$ eine cdf ist, gibt es $M>0$, sodass
+    $$F(-M)+1-F(M)<\dfrac{\eps}{2}$$
+    Seien o.B.d.A. $\pm M$ Stetigkeitspunkte von $F$. Dann gilt
+    $$F(-M)+1-F(M)=\lim_{k\to\infty}\left[F_{n_{i_k}}(-M)+1-F_{n_{i_K}}(M)\right]<\dfrac{\eps}{2}$$
+    Da aber 
+    $$F_{n_{i_k}}(-M)+1-F_{n_{i_k}}(M)\geq F_{n_{i_k}}(-i_k)+1-F_{n_{i_k}}(i_k)\geq\eps>\dfrac{\eps}{2}$$
+    f\"ur hinreichend gro\ss{}e $k$ (sodass $i_k\geq M$) ergibt sich hier ein Widerspruch zur Annahme (6). \qed
+\end{enumerate}
+
+\section*{Charakteristische Funktionen}
+\addcontentsline{toc}{section}{Charakteristische Funktionen}
+Betrachte $\C=\{a+ib\:a,b\in\R\}$ isomorph zu $\R^2$ (im Sinne von Vektorr\"aumen). Weil $|a+ib|^2=\Vert(a,b)\Vert_2^2$, kann man $\mathcal{B}(\C)$, die von den offenen Teilmengen in $\C$ erzeugte $\sigma$-Algebra, auch als $\mathcal{B}(\R^2)$ betrachten. In diesem Kapitel sei $\pspace$ wieder ein generischer Wahrscheinlichkeitsraum.
+
+\paragraph{11.15. Definition:} Sei $X:\Omega\to\C$ eine Zufallsvariable und schreibe $X=\Re(X)+\Im(X)$ ($\Re(z)$ ist der Realteil von $z\in\C$ und $\Im(z)$ ist der Imagin\"arteil von $z\in\C$).Sind $\Re(X)$ und $\Im(X)$ beide integrierbar (bzgl.), dann nennt man $X$ integrierbar und setzt
+$$\int X\ d\Pp:=\int\Re(X)\ d\Pp+i\int\Im(X)\ d\Pp$$
+\paragraph{Bemerkung:} Es gilt $X\in L_1\iff |X|\in L_1$, denn
+$$\max(\Re(X),\Im(X))\leq|(\Re(X))^2+(\Im(X))^2|^{1/2}=|X|\leq|\Re(X)|+|\Im(X)|$$
+
+\paragraph{11.16. Lemma:} Das oben definierte Lebesgue-Integral ist linear und f\"ur $X\in L_1$ gilt die Dreiecksungleichung
+$$|\E X|\leq\E|X|$$
+
+\paragraph{Beweis:} folgt noch % to be added
+
+\paragraph{Bemerkung:} Es gilt (einfacher Beweis, cf. komplexe Analysis)
+\begin{gather*}
+    e^{ix}=\cos(x)+i\sin(x) \\
+    \dfrac{\del}{\del x}e^{ix}=ie^{ix}
+\end{gather*}
+ 
+\paragraph{11.17. Definition:} Die charakteristische Funktion (cf) einer Zufallsvariable $X:\Omega\to\R$ ist definiert als
+$$\varphi_X(t):=\E \left[e^{itX}\right],\forall t\in\R$$
+$\varphi:\R\to\C$ ist mit DOMK immer wohldefiniert, da $\left|e^{itX}\right|\leq1$
+
+\paragraph{11.18. Proposition:} Seien $X,Y$ reellwertige, unabh\"angige Zufallsvariablen. Dann gilt
+$$\varphi_{X+Y}=\varphi_X(t)\varphi_Y(t)$$
+
+\paragraph{Beweis:}
+\begin{align*}
+    \varphi_{X+Y}(t)&=\E\left[e^{itX}e^{itY}\right] \\
+    &=\E\left[(\cos(tX)+i\sin(tX))(\cos(tY)+i\sin(tY))\right] \\
+    &=\E\left[\cos(tX)\cos(tY)+i\cos(tX)\sin(tY)+i\sin(tX)\cos(tY)-\sin(tX)\sin(tY)\right] \\
+    &\overset{\in\R}{=}\E\left[\cos(tX)+i\sin(tX)\right]\E\left[\cos(tY)+i\sin(tY)\right]=\varphi_X(t)\varphi_Y(t)
+\end{align*}\qed
+
+\paragraph{11.19. Lemma:} Die momenterzeugende Funktion (mgf) einer reellwertigen Zufallsvariable $X$
+$$M_X(t):=\E\left[e^{tX}\right]$$
+sei wohldefiniert in einer offenen Umgebung von $0$, i.e. 
+$$\exists t_0>0:M_X(t)\text{ exisitert f\"ur } t\in(-t_0,t_0)$$
+Dann folgt
+$$\forall k\geq0:X\in L_k \text{ und }\E X^k=\dfrac{\del^k}{\del t^k}M_X(t)\Bigg|_{t=0}$$
+
+\paragraph{Beweis:} Sei $M_X(t)$ wohldefiniert f\"ur $|t|<t_0$ mit $t_0>0$. Dann folgt mit
+$$0\leq e^{t|X|}\leq e^{tX}+e^{-tX}$$
+dass
+$$\forall |t|<t_0:e^{t|X|}\in L_1$$
+Sei also $t<t_0$. Per Definition ist 
+$$e^{tX}=\sum_{k\geq0}\dfrac{(tX)^k}{k!}$$
+wobei die Partialsummen im Betrag durch $e^{|tX|}\in L_1$ beschr\"ankt sind. Mit DOMK gilt damit 
+$$M_X(t)=\\E\left[e^{tX}\right]=\lim_{n\to\infty}\sum_{k=1}^n\dfrac{t^k\E X^k}{k^!}$$
+wobei die Reihe absolut konvergiert, da
+$$\sum_{k\geq0}\dfrac{|t^k\E X^k|}{k!}\leq\sum_{k\geq0}\dfrac{|t^k|\E |X|^k}{k!}\overset{\text{MONK}}{=}\E\left[\sum_{k\geq0}\dfrac{|t^k|X^k}{k!}\right]=\E\left[ e^{|tX|}\right]<\infty$$
+Differenzieren liefert dann
+$$\dfrac{\del^\ell}{\del t^\ell}M_X(t)=\sum_{k\geq\ell}\dfrac{k(k-1)\hdots(k-\ell+1)}{k!}t^{k-\ell}\E X^k$$
+und mit $t=0$ das gew\"unschte Ergebnis.\qed
+
+\paragraph{11.20. Satz (Inversions- und Eindeutigkeitssatz):} Sei $\varphi$ die cf und $F$ die cdf einer reelwertigen Zufallsvariable $X$. Dann gilt
+$$F(t)=\lim_{n\to\infty}\dfrac{1}{2\pi}\int\displaylimits_{-\infty}^t\int\displaylimits_{-\infty}^{+\infty}\exp\left(-\dfrac{w^2}{2n^2}+iwv\right)\varphi(-w)\ dw\ dv$$
+f\"ur jedes $t$ mit $\Pp(x=t)=0$. Wegen der rechtsstetigkeit von $F$ ist $F(t)$ damit f\"ur jedes $t\in\R$ eindeutig durch $\varphi$ definiert. 
+
+\paragraph{Bermerkung:} In der Literatur wird oft 
+$$\Pp(a\leq X<b)=\lim_{T\to\infty}\dfrac{1}{2\pi}\int\displaylimits_{-T}^T\dfrac{e^{-ita}-e^{-itb}}{it}\varphi(t))\ dt$$
+angegeben f\"ur $\Pp(X=a)=\Pp(x=b)=0$.
+
+\paragraph{Beweis:} Die Idee ist Folgende: \newline
+Sei $Z\sim\mathcal{N}(0,1)$ u.a. von $X$ und setze $X_n:=X+Z/n$. Dann gilt $X_n\nto{a.s.}{n\to\infty}X$ und als Konsequenz auch $F_n\nto{d}{n\to\infty}F$. F\"ur $t$ mit $\Pp(X=t)=0$, folgt dann $F_n(t)\nto{}{n\to\infty}F(t)$. Zeige nun: 
+\begin{enumerate}[label=\Roman*.]
+    \item $X_n$ hat eine Dichte $f_n$ bzgl. dem Lebesgue-Ma\ss{} $\lambda=\text{vol}$
+    \item Diese Dichte ist von der Form 
+    $$f_n(v)=\dfrac{1}{2\pi}\int\displaylimits_{-\infty}^{+\infty}\exp\left(-\dfrac{w^2}{2n^2}+iwv\right)\varphi(-w)\ dw$$
+\end{enumerate}
+\vspace{1ex}
+I. $Z/n$ hat eine Riemann-integrierbare Dichte $\phi_{0,1/n^2}=:\phi$ bzgl. $\lambda$ und somit folgt
+\begin{align*}
+    F_n(t)&=\Pp(X+Z/n\leq t)\\
+    &\overset{\text{Tonelli, u.a.}}{=}\int\displaylimits_{(X)}\int\displaylimits_{(Z)}\ind{(-\infty,t]}(x+v)\ d\Pp_{Z/n}(v)\ d\Pp_X(x) \\
+    &=\int\displaylimits_{(X)}\int\displaylimits_{-\infty}^{t-x}\phi(v)\ dv\ d\Pp_X(x) \\
+    &\overset{w:=v+x}{=}\int\displaylimits_{X}\int\displaylimits_{-\infty}^t \phi(w-x)\ dw\ d\Pp_X(x) \\
+    &=\int\displaylimits_{(X)}\int\displaylimits_{(W)}\ind{(-\infty,t]}(w)\phi(w-x)\ d\lambda(w)\ d\Pp_X(x) \\
+    &\overset{\text{Tonelli}}{=}\int\displaylimits_{(W)}\int\displaylimits_{(X)}\ind{(-\infty,t]}(w)\phi(w-x)\ d\Pp_X(x)\ d\lambda(w) \\
+    &=\int\displaylimits_{(W)}\ind{(-\infty,t]}(w)\left[\int\displaylimits_{(X)}\phi(w-x)\ d\Pp_X(x)\right]\ d\lambda(w) \\
+    &=\int\displaylimits_{-\infty}^t \E_X\left[\phi(w-X)\right]d\lambda(w)
+\end{align*}
+Damit ist $f_n(v):=\E_X\left[\phi(v-X)\right]$ eine Dichte von $X_n$.\newline\newline
+II. Es gilt 
+$$\phi(t)=\dfrac{n}{\sqrt{2\pi}}\exp\left(-\dfrac{t^2n^2}{2}\right)=\dfrac{n}{\sqrt{2\pi}}\varphi_Z(nt)$$
+und damit 
+\begin{align*}
+    f_n(v)&=\E_X\left[\phi(v-X)\right]\\
+    &=\E_X\left[\dfrac{n}{\sqrt{2\pi}}\varphi_Z[n(v-X)]\right] \\
+    &=\E_X\left[\dfrac{n}{\sqrt{2\pi}}\E_Z\left[e^{invZ-inXZ}\right]\right]\\
+    &\overset{\text{Fubini}}{=}\dfrac{n}{\sqrt{2\pi}}\E_Z\left[\E_X\left[e^{invZ}e^{-inXZ}\right]\right]\\
+    &=\dfrac{n}{\sqrt{2\pi}}\E_Z\left[e^{invZ}\E_X\left[e^{-inXZ}\right]\right] \\
+    &=\dfrac{n}{\sqrt{2\pi}}\int\displaylimits_{-\infty}^{+\infty}\dfrac{1}{n\sqrt{2\pi}}\exp\left(-\dfrac{w^2}{2n^2}\right)\exp\left(iwv\right)\E_X\left[e^{-iwX}\right] \ dw \\
+    &=\dfrac{1}{2\pi}\int\displaylimits_{-\infty}^{+\infty}\exp\left(-\dfrac{w^2}{2n^2}+iwv\right)\varphi(-w)\ dw
+\end{align*}
+wobei der vorletzte Schritt mit der Erwartung von $nZ\sim\mathcal{N}(0,n^2)$ folgt. \qed
+
+\paragraph{11.21. Satz (L\'evy Continuity Theorem/Stetigkeitssatz):} Betrachte eine Folge von reellwertigen Zufallsvariablen $X_n,n\geq1$ mit entsprechenden cdfs $F_n,n\geq1$ und cfs $\varphi_n,n\geq1$. Wenn
+\begin{enumerate}[label=(\roman*)]
+    \item $\forall t\in\R: \exists\lim_{n\to\infty}\varphi_n(t)=:\gamma(t)\in\C$
+    \item $\gamma(t)$ stetig im Punkt $t=0$
+\end{enumerate}
+dann folgt, dass $\gamma$ die cf einer cdf $F$ ist, und
+$$F_n\nto{d}{n\to\infty}F$$
+
+% Bin mir wirklich nicht sicher, wie dieser Bweweis durchgeht
+\paragraph{Beweis:}Seien $X_n,n\geq1$ jeweils $F_n$-verteilt. Zeige (sp\"ater), dass die $F_n$ straff sind.
+Mit Prokorov (Satz 11.14) gibt es dann eine Teilfolge $F_{n_j},j\geq1$, sodass
+$$F_{n_j}\nto{d}{j\to\infty}F$$
+f\"ur eine cdf einer Zufallsvariable $X$. Da die Funktionen $\sin,\cos$ auf $\R$ stetig und beschr\"ankt sind folgt mit PMT1 (Satz 11.5)
+$$\forall t\in\R:\varphi_{n_j}(t)\nto{}{j\to\infty}\varphi_X(t)$$
+f\"ur $\varphi_X$ die cf von $X$. Wegen Annahme (i) und weil der Grenzwert von $\varphi_{n_j}(t)$ derselbe wie von $\varphi_n(t)$ sein muss (cf. Analysis: wenn eine Folge konvergiert, dann konvergiert jede Teilfolge zum selben Grenzwert), folgt damit
+$$\forall t\in\R:\varphi_n(t)\nto{}{n\to\infty}\varphi_X(t)$$
+Zeige nun $F_n\nto{d}{n\to\infty}F$. Angenommen nicht: 
+$$\implies\exists\text{Teilfolge} (F_{n_k})_{k\geq1}:F_{n_k}\xcancel{\nto{d}{k\to\infty}}F$$
+Aber $F_{n_k},k\geq1$ ist straff, da $F_n,n\geq1$ straff ist und enth\"alt mit Helly (Satz 11.11) und Prokorov (Satz 11.14) daher eine weitere Teilfolge $F_{n_{k_\ell}},\ell\geq1$ mit 
+$$F_{n_{k_\ell}}\nto{d}{\ell\to\infty}G$$
+f\"ur eine cdf $G$. Damit gilt
+$$\forall t\in\R:\varphi_{n_{k_\ell}}(t)\nto{}{\ell\to\infty}\varphi_G(t)$$
+und damit (siehe oben) 
+$$\forall t\in\R\varphi_n(t)\nto{}{n\to\infty}\varphi_G(t)$$
+Wegen (ii) gilt aber $\varphi_X(t)=\varphi_G(t)$ und mit dem Inversion Theorem (Satz 11.20) folgt
+$$G\overset{d}{=}F$$
+ein Widerspruch. \qed
+
+\paragraph{11.22. Satz}Betrachte eine Folge von Zufallsvariablen $X_n,n\geq1$ mit cdfs $F_n,n\geq1$ und cfs $\varphi_n,n\geq1$. Es gilt
+$$X_n\nto{d}{n\to\infty}X\iff\varphi_n\nto{}{n\to\infty}\varphi$$
+
+\paragraph{Beweis:}Die Implikation $\implies$ folgt trivial mit PMT1, da $\cos,\sin$ stetig und beschr\"ankt auf $\R$ sind.
+Zeige also die Implikation $\impliedby$\newline
+ Dazu gen\"ugt es zu zeigen, dass $\varphi(\cdot)$ stetig im Punkt $t=0$ ist (dann folgt mit dem L\'evy Continuity Theorem, dass $F_n\nto{d}{n\to\infty}F$). Es gilt
+ $$\left|e^{itX}\right|\leq1 \text{ und }e^{itX}\nto{a.s.}{t\to0}1\text{ (sogar punktweise)}$$
+ Mit DOMK folgt daher
+ $$\varphi(t)=\E \left[e^{itX}\right]\nto{}{t\to0}1=\varphi(0)$$
+ und damit die Aussage.\qed
+ 
+ \section*{Zentrale Grenzwerts\"atze}
+ \addcontentsline{toc}{section}{Zentrale Grenzwerts\"atze}
+ \paragraph{11.23. Lemma:}Seien $z_i,w_i\in\C$ mit $|z_i|,|w_i|\leq1,i=1,\hdots,n$. dann gilt folgende Ungleichung
+ $$|z_1\cdot\hdots\cdot z_n-w_1\cdot\hdots\cdot w_n|\leq\sum_{i=1}^n|z_i-w_i|$$
+ 
+ \paragraph{Beweis:}Induktiv nach $n$.
+ \begin{enumerate}
+     \item Base ($P(1)$): $|z_1-w_1|\leq|z_1-w_1|$
+     \item Induktionsschritt ($P(n)\implies P(n+1)$): 
+     \begin{align*}
+         &|z_1\cdot\hdots\cdot z_n\cdot z_{n+1}-w_1\cdot\hdots\cdot w_n\cdot w_{n+1}|\\
+         =\ &|z_1\cdot\hdots\cdot z_n\cdot z_{n+1}-z_1\cdot\hdots\cdot z_nw_{n+1}+z_1\cdot\hdots\cdot z_nw_{n+1}-w_1\cdot\hdots\cdot w_n\cdot w_{n+1}|\\
+         =\ &|z_1\cdot\hdots\cdot z_n\cdot(z_{n+1}-w_{n+1})-w_{n+1}\cdot(z_1\cdot\hdots\cdot z_n-w_1\cdot\hdots\cdot w_n)| \\
+         \leq\ &|z_1\cdot\hdots\cdot z_n|\cdot|z_{n+1}-w_{n+1}|+|w_{n+1}||z_1\cdot\hdots\cdot z_n-w_1\cdot\hdots\cdot w_n| \\
+         \leq\ &\sum_{i=1}^{n+1}|z_i-w_i|  
+     \end{align*}
+     \qed
+ \end{enumerate}
+ 
+ \paragraph{11.24. Lemma:} F\"ur $x\in\R$ und $n\in\mathbb{N}_0$ ist 
+ $$e^{ix}=\sum_{k=0}^n\dfrac{(ix)^k}{k!}+R_n(x)$$
+ mit Rest
+ $$R_n(x)=\dfrac{i^{n+1}}{n!}\int\displaylimits_0^x(x-s)^ne^{is}\ ds$$
+ wobei insbesondere gilt
+ $$R_n(x)\leq\min\left(\dfrac{|x|^{n+1}}{(n+1)!},\dfrac{2|x|^n}{n!}\right)$$
+ (wobei uns sp\"ater im Beweis des Lindeberg-L\'evy CLT der Fall $n=2$ interessiert).
+ 
+ \paragraph{Beweis:} Induktiv nach $n$.
+ \begin{enumerate}
+     \item Base (P(0)):
+     \begin{align*}
+         \int\displaylimits_0^xe^{is}\ ds&=i^{-1}e^{is}\bigg|_{s=0}^{s=x}\\
+         &=-ie^{is}\bigg|_{s=0}^{s=x}\\
+         &=i-ie^{ix} \\
+         \implies ie^{ix}=i-&\int\displaylimits_0^xe^{is}\\
+         \implies e^{ix}=1+i\int\displaylimits_0^xe^{is}\ ds=&\sum_{k=0}^0\dfrac{(ix)^k}{k!}+\dfrac{i^{0+1}}{0!}\int\displaylimits_0^x(x-s)^0e^{is}\ ds
+     \end{align*}
+     \item Induktionsschritt ($P(n)\implies P(n+1)$): Laut Voraussetzung gilt 
+     $$e^{ix}=\sum_{k=0}^n\dfrac{(ix)^k}{k!}+R_n(X)$$
+     wobei 
+     $$R_n(x)=\dfrac{i^{n+1}}{n!}\int\displaylimits_0^x(x-s)^ne^{is}\ ds$$
+     Zeige also 
+     $$R_n(x)=\dfrac{(ix)^{n+1}}{(n+1)!}+R_{n+1}(x)$$
+     Mit partieller Integration ($f(s)=e^{is}, g'(s)=-\frac{(x-s)^{n+1}}{n+1}$) gilt
+     \begin{align*}
+         R_n(x)&=\dfrac{i^{n+1}}{n!}\int\displaylimits_0^x(x-s)^ne^{is}\ ds \\
+         &=\dfrac{i^{n+1}}{n!}\left(\left[-e^{is}\dfrac{(x-s)^{n+1}}{n+1}\right]_{s=0}^{s=x}+\int\displaylimits_0^xie^{is}\dfrac{(x-s)^{n+1}}{n+1}\ ds\right)\\ 
+         &=\dfrac{i^{n+1}}{n!}\left(\dfrac{x^{n+1}}{n+1}+\dfrac{i}{n+1}\int\displaylimits_0^x(x-s)^{n+1}e^{is}\ ds \right) \\
+         &=\dfrac{(ix)^{n+1}}{(n+1)!}+\dfrac{i^{n+2}}{(n+1)!}\int\displaylimits_0^x(x-s)^{n+1}e^{is}\ ds\\
+         &=\dfrac{(ix)^{n+1}}{(n+1)!}+R_{n+1}(x)
+     \end{align*}
+     Zur ersten Ungleichung: \newline
+     F\"ur $x\geq0$ und mit $|e^{ix}|\leq1, |i^\ell|=1,\forall\ell\geq1$ ist
+     \begin{align*}
+         |R_n(x)|&\leq\dfrac{1}{n!}\int\displaylimits_0^x|x-s|^n\ ds\\
+         &=\dfrac{1}{n!}\int\displaylimits_0^x(x-s)^n\ ds \\
+         &=\dfrac{x^{n+1}}{(n+1)!}\overset{x\geq0}{=}\dfrac{|x|^{n+1}}{(n+1)!}
+     \end{align*}
+     F\"ur $x<0$ ist
+     \begin{align*}
+         |R_n(x)|&\leq\dfrac{1}{n!}\left|\int\displaylimits_0^x(x-s)^ne^{is}\ ds\right|\\
+         &\dfrac{1}{n!}\left|\int\displaylimits_x^0(x-s)^ne^{is}\ ds\right| \\
+         &=\dfrac{1}{n!}\int\displaylimits_x^0(s-x)^n\ ds =\dfrac{(-x)^{n+1}}{(n+1)!}\overset{x<0}{=}\dfrac{|x|^{n+1}}{(n+1)!}
+     \end{align*}
+     womit die erste Ungleichung f\"ur alle $x\in\R$ gilt.
+ \end{enumerate}
+ Zur zweiten Ungleichung:\newline
+ \begin{align*}
+     R_n(x)&=\dfrac{i^{n+1}}{n!}\int\displaylimits_0^x(x-s)^ne^{is}\ ds\\
+     &=\dfrac{i^{n+1}}{n!}\left(\left[-ie^{is}(x-s)^n\right]_{s=0}^{s=x}-in\int\displaylimits_0^x(x-s)^{n-1}e^{is}\ ds\right) \\
+     &=\dfrac{i^{n+2}x^n}{n!}-\dfrac{i^{n+2}}{(n-1)!}\int\displaylimits_0^x(x-s)e^{is}\ ds
+ \end{align*}
+ wobei der erste Schritt wieder mit partieller Integration f\"ur $f(s)=(x-s)^n$ und $g'(s)=e^{is}$ folgt. \"Ahnlich wie f\"ur die erste Ungleichung folgt damit
+ $$|R_n(x)|\leq\dfrac{|x|^n}{n!}+\dfrac{1}{(n+1)!}\left|\int\displaylimits_0^x(x-s)^{n-1}e^{is}\right|\leq\dfrac{2|x|^n}{n!}$$
+ \qed
+ 
+ \paragraph{11.25. Satz (Lindeberg\textendash L\'evy CLT):} Es seien $X_i\overset{\text{i.i.d.}}{\sim} X,i\geq1$ quadratisch integrierbare Zufallsvariablen mit $\E X=\mu,\operatorname{Var}(X)=\sigma^2\in(0,\infty)$. F\"ur $\overline X_n:=\sum_{i=1}^n X_i$ gilt dann
+ $$\dfrac{\sqrt{n}(\overline X_n-\mu)}{\sigma}\nto{d}{n\to\infty}\mathcal{N}(0,1)$$
+ 
+ \paragraph{Beweis:}Seien o.B.d.A. $\mu=0,\sigma=1$. Sei im Folgenden $\psi$ die cf von $X$ und $\varphi_n$ die cf von $\sqrt{n}\overline X_n$. Zu zeigen ist dann
+ $$\varphi_n(t)\nto{}{n\to\infty}e^{-t^2/2}$$
+ Mit Lemma 11.23 gilt $e^{itX}=1+itX-\frac{(tX)^2}{2}+R_2(tX)$
+ wobei $|R_2(tX)|\leq\min\left(\frac{|tX|^3}{6},t^2X^2\right)$. Damit gilt also
+ $$\psi(t)=1+\E[itX]-\dfrac{t^2\E X^2}{2}+\E R_2(tX)$$
+ Sei $t>0$. Mit der zweiten Ungleichung aus Lemma 11.23 gilt $\left|\frac{R_2(tX)}{t^2}\right|\leq X^2\in L_1$ und mit der ersten Ungleichung gilt $\left|\frac{R_2(tX)}{t^2}\right|\nto{a.s.}{t\searrow0}0$. Mit DOMK folgt schlie\ss{}lich
+ $$\E\left|\frac{R_2(tX)}{t^2}\right|\nto{}{t\searrow0}0$$
+ Nun gilt
+ $$\varphi_n(t)=\E\left[e^{it\sqrt{n}\overline X_n}\right]\overset{\text{i.i.d.}}{=}\left[\psi\left(\frac{t}{\sqrt{n}}\right)\right]^n=\left(1-\frac{t^2}{2n}+\E[R_2(tX)]\right)^n$$
+ F\"ur $t=0$ gilt also $\varphi_n(0)=1=e^{-0^2/2}$.\newpage
+ F\"ur $t\neq0$ ist 
+ \begin{align*}
+     \left|\varphi_n(t)-e^{-t^2/2}\right|&=\left|\varphi_n(t)-\left(1-\dfrac{t^2}{2n}\right)^n+\left(1-\dfrac{t^2}{2n}\right)^n-e^{-t^2/2}\right|\\
+     &\leq\left|\varphi_n(t)-\left(1-\dfrac{t^2}{2n}\right)^n\right|+\left|\left(1-\dfrac{t^2}{2n}\right)^n-e^{-t^2/2}\right|\\
+     &=\left|\left[\psi\left(\dfrac{t}{\sqrt{n}}\right)\right]^n-\left(1-\dfrac{t^2}{2n}\right)^n\right|+\mathcal{O}(1)\\
+     &\overset{11.22}{\leq}\sum_{i=1}^n\left|\psi\left(\dfrac{t}{\sqrt{n}}\right)-\left(1-\dfrac{t^2}{2n}\right)\right|\\
+     &=n\left|\psi\left(\dfrac{t}{\sqrt{n}}\right)-\left(1-\dfrac{t^2}{2n}\right)\right|\\
+     &=n\left|\E \left[R_2\left(\dfrac{tX}{\sqrt{n}}\right)\right]\right|\\
+     &=\dfrac{nt^2}{n}\left|\dfrac{\E \left[R_2\left(\dfrac{tX}{\sqrt{n}}\right)\right]}{t^2/n}\right|\nto{}{n\to\infty}0
+ \end{align*}
+ \qed
+ 
+ \subsection*{Lindeberg- und Ljapunov-Bedingung}
+ Betrachte nun allgemeiner ein trianguläres Feld von quadratisch integrierbaren Zufallsvariablen $X_{n,i},i=1,\hdots,r_n,n\geq1$, sodass für $n\geq1$ die $X_{n,1},\hdots,X_{n,r_n}$ unabhängig sind. Definiere weiters
+ $$\sigma_{n_i}^2:=\Var(X_{n,i})\text{ und }s_n^2:=\sum_{i=1}^{r_n}\sigma_{n,i}^2$$
+ Eine Folge von quadratisch integrierbaren, unabhängigen Zufallsvariablen $Y_k,k\geq1$ erfüllt diese Eigenschaften natürlich, da wir dann $X_{n,i}\sim Y_i$ für alle $n\geq1$ und $i=1,\hdots,r_n$ haben.
+ % Die letzte Zeile habe ich hier zum besseren Verständnis angehängt.
+ 
+ \paragraph{11.26. Definition (Lindeberg-Bedingung):}Wir sagen, dass die Lindeberg-Bedingung für $X_{n,i},i=1,\hdots,r_n,n\geq1$ gilt, falls
+ $$\forall\eps>0:\dfrac{1}{s_n^2}\sum_{i=1}^{r_n}\E\left[(X_{n,i}-\E X_{n,i})^2\ind{\{|X_{n,i}-\E X_{n,i}|>\eps\cdot s_n\}}\right]\nto{}{n\to\infty}0$$
+ 
+ \paragraph{11.27. Satz (Lindeberg CLT):}Unter der Lindeberg-Bedingung gilt für $\overline X_n=n^{-1}\sum_{i=1}^{r_n}X_{n,i}$, dass
+ $$\sqrt{n}\dfrac{\overline X_n-\E\overline X_n}{s_n}=\dfrac{\overline X_n-\E\overline X_n}{\sqrt{\Var(\overline X_n)}}\nto{d}{n\to\infty}\mathcal{N}(0,1)$$
+ 
+ \paragraph{Beweis:}siehe z.B. P. Billingsley, \textit{Probability and Measure} (3rd Ed.), p.360. \qed
+ 
+ \paragraph{11.28. Definition (Ljapunov-Bedingung):}Wir sagen, dass die Ljapunov-Bedingung für $X_{n,i},i=1,\hdots,r_n,n\geq1$ gilt, falls
+$$\exists\delta>0:\dfrac{1}{s_n^{2+\delta}}\sum_{i=1}^{r_n}\E\left|X_{n,i}-\E X_{n,i}\right|^{2+\delta}\nto{}{n\to\infty}0$$
+
+\paragraph{11.29. Lemma:} Die Ljapunov-Bedingung impliziert die Lindeberg-Bedingung.
+
+\paragraph{Beweis:}Sei o.B.d.A. $\E X_{n,i}=0$ für alle $i=1,\hdots,r_n,n\geq1$. Sei $\delta>0$ wie in der Ljapunov-Bedingung, die laut Annahme gilt. Für $\eps>0$ gilt
+\begin{align*}
+    \dfrac{1}{s_n^2}\sum_{i=1}^{r_n}\E\left[X_{n,i}^2\ind{\{|X_{n,i}|>\eps\cdot s_n\}}\right]&\overset{1\leq\frac{|X_{n,i}|^\delta}{(\eps\cdot s_n)^\delta}}{\leq}\dfrac{1}{s_n^2}\sum_{i=1}^{r_n}\E\left[X_{n,i}^2\dfrac{|X_{n,i}|^\delta}{(\eps\cdot s_n)^\delta}\ind{\{|X_{n,i}|>\eps\cdot s_n\}}\right]\\
+    &\leq\dfrac{1}{\eps^\delta}\dfrac{1}{s_n^{2+\delta}}\sum_{i=1}^{r_n}\E|X_{n_i}|^{2+\delta}\nto{}{n\to\infty}0
+\end{align*}
+\qed
+
+% Hier die Linderberg-Bedingung und die Ljapunov-Bedingung einf\"ugen (Handout)
+
+\chapter*{12. Radon-Nikodym-Ableitungen}
+\addcontentsline{toc}{chapter}{12. Radon-Nikodym-Ableitungen}
+In diesem Kapitel sei $(\Omega,\mathcal{A})$ ein messbarer Raum und $\nu,\mu$ generische Ma\ss{}e auf diesem Raum.
+\section*{Signierte Ma\ss{}e}
+ \addcontentsline{toc}{section}{12.1 Signierte Ma\ss{}e}
+ 
+ \paragraph{12.1. Definition:} Ein signiertes Ma\ss{} ist eine Abbildung $\varphi:\mathcal{A}\to\R$, die $\sigma$-additiv ist, i.e. f\"ur $A_n\in\mathcal{A},n\geq1$ disjunkt gilt
+ $$\varphi\left(\bigcup_{n\geq1}A_n\right)=\sum_{n\geq1}\varphi(A_n)$$
+ In unserem Kontext seien signierte Ma\ss{}e immer endlich und bilden $\emptyset$ auf $0$ ab.
+ 
+ \paragraph{12.2. Beispiel:} Einige Beispiele f\"ur signierte Ma\ss{}e sind
+ \begin{enumerate}[label=(\roman*)]
+     \item $\phi(A):=\mu(A)$, wenn $\mu$ endlich ist.
+     \item $\varphi(A):=\mu(A)-\nu(A)$, wenn $\mu,\nu$ endlich sind.
+     \item $\varphi(A):=\int_A f\ d\mu$, wenn $f\in L_1(\mu)$
+ \end{enumerate}
+ 
+ \paragraph{12.3. Lemma:} Seien $A_n\in\mathcal{A},n\geq1$, sodass entweder
+ \begin{enumerate}[label=(\roman*)]
+     \item $A_1\subseteq A_2\subseteq\hdots\subseteq\bigcup_{n\geq1}A_n:=A$, oder
+     \item $A_1\supseteq A_2\supseteq\hdots\supseteq\bigcap_{n\geq1}A_n:=A$
+ \end{enumerate}
+ Dann ist in beiden F\"allen 
+ $$\lim_{n\to\infty}\varphi(A_n)=\varphi(A)$$
+ i.e. signierte Ma\ss{}e sind von unten/oben stetig.
+ 
+ \paragraph{Beweis:}
+ \begin{enumerate}[label=(\roman*)]
+     \item
+     \begin{align*}
+     \varphi(A)&=\varphi(A_1\cup\bigcup_{n\geq1}(A_{n+1}\setminus A_n))\\
+     &=\varphi(A_1)+\sum_{n\geq1}\varphi(A_{n+1}\setminus A_n)\\
+     &=\lim_{N\to\infty}\left[\varphi(A_1)+\sum_{n=1}^N\varphi(A_{n+1}\setminus A_n)\right]\\
+     &=\lim_{N\to\infty}\varphi(A_{N+1})=\lim_{N\to\infty}\varphi(A_N)
+     \end{align*}
+     \item Hier gilt $A_1^c\subseteq\hdots\subseteq\bigcup_{n\geq1}A_n^c=:A^c$
+     \begin{flalign*}
+         \overset{\text{(i)}}{\implies}&\varphi(A^c)=\lim_{n\to\infty}\varphi(A_n^c) &&\\
+         \implies &\varphi(\Omega)-\varphi(A)=\lim_{n\to\infty}[\varphi(\Omega)-\varphi(A_n)] =\varphi(\Omega)-\lim_{n\to\infty}\varphi(A_n) &&\\
+         \implies &\varphi(A)=\lim_{n\to\infty}\varphi(A_n)
+     \end{flalign*}
+     \end{enumerate}
+     \qed
+     
+     \paragraph{4. Satz (Hahn/Jordan Decomposition Theorem):} Sei $\varphi$ ein signiertes Ma\ss{} auf $(\Omega,\mathcal{A})$. Dann gibt es eine Partition (Hahn-Zerlegung) von $\Omega$
+     $$\Omega=\Omega_+\cup\Omega_-$$
+     mit $\Omega_+,\Omega_-\in\mathcal{A}$, sodass
+     $$\forall A\in\mathcal{A}:\varphi(A\cap\Omega_+)=:\varphi_+(A)\geq0, \ \varphi(A\cap\Omega_-)=:\varphi_-(A)\leq0$$
+     Daraus folgt sofort die Jordan-Zerlegung
+     $$\forall A\in\mathcal{A}:\varphi(A)=\varphi_+(A)+\varphi_-(A)$$
+     
+     \paragraph{Beweis:}Sei $\alpha:=\displaystyle\sup_{A\in\mathcal{A}}\varphi(A)$. Dann gibt es eine Menge $D\in\mathcal{A}$, sodass dieses Supremum angenommen wird, i.e. $\varphi(D)=\alpha$ (Details zur Konstruktion siehe unten).
+     Setze nun $\Omega_+:=D$ und $\Omega_-:=D^c$. Dann gilt
+     \begin{itemize}
+         \item Angenommen es gibt $A\in\mathcal{A}$ mit $\varphi(A\cap D)<0$. Dann ist $D=(D\cap A)\cup(D\setminus A)$ und 
+         $$\alpha=\varphi(D)=\varphi(D\cap A)+\varphi(D\setminus A)<\varphi(D\setminus A)$$
+         ein Widerspruch, da $D\setminus A\in\mathcal{A}$ und $\alpha=\displaystyle\sup_{A\in\mathcal{A}}\varphi(A)$.
+         \item Angenommen es gibt $A\in\mathcal{A}$ mit $\varphi(A\cap D^c)>0$. Dann ist 
+         $$\varphi(D\cup(A\cap D^c))=\varphi(D)+\varphi(A\cap D^c)>\varphi(D)=/\alpha$$
+         ein Widerspruch, da $D\cup(A\cap D^c)\in\mathcal{A}$ und $\alpha=\displaystyle\sup_{A\in\mathcal{A}}\varphi(A)$.
+     \end{itemize}
+     Zur Konstruktion von $D$:\newline
+     W\"ahle $A_n,n\geq1$, sodass $\displaystyle\lim_{n\to\infty}\varphi(A_n)=\alpha$ und definiere f\"ur $n\geq1$
+     $$\mathcal{B}_n:=\left\{B_I=\left(\bigcap_{I_i=1}A_i\right)\cup\left(\bigcap_{I_i=0}A_i\right):I\in\{0,1\}^n\right\}$$
+     sukzessive feiner werdende Partitionen von $\Omega$. Setze nun 
+     $$C_n:=\bigcup_{\substack{B_I\in\mathcal{B}_n\\ \varphi(B_I)>0}}B_I$$
+     Nun ist 
+     $$A_n=\bigcup_{\substack{B_I\in\mathcal{B}_n\\ I_n=1}}B_I$$
+     sodass $\varphi(A_n)\leq\varphi(C_n)\ (*)$. Au\ss{}erdem ist 
+     $$\varphi\left(\bigcup_{m=n}^NC_m\right)\leq\varphi\left(\bigcup_{m=n}^{N+1}C_m\right)$$
+     da $\displaystyle\left(\bigcup_{m=n}^{N+1}C_m\right)\setminus \left(\bigcup_{m=n}^NC_m\right)$ eine Vereinigung von Mengen $B_I$ aus $\mathcal{B}_{N+1}$ mit $\varphi(B_I)>0$ ist. $(**)$\newline\newline 
+     Setze nun $D_i:=\displaystyle\limsup_{n\to\infty}C_n$
+     Dann folgt
+     \begin{align*}
+         \alpha&=\lim_{n\to\infty}\varphi(A_n) \\
+         &\overset{(*)}{\leq}\liminf_{n\to\infty}\varphi(C_n)\\
+         &\overset{(**)}{\leq}\liminf_{n\to\infty}\limsup_{N\to\infty}\varphi\left(\bigcup_{m=n}^NC_m\right)\\
+         &\overset{\text{S.v.U.}}{=}\liminf_{n\to\infty}\varphi\left(\bigcup_{m=n}^\infty C_m\right)\\
+         &\overset{\text{S.v.O.}}{=}\varphi\left(\bigcap_{n=1}^\infty \bigcup_{m=n}^\infty C_m\right)\\
+         &=\varphi\left(\limsup_{n\to\infty}C_n\right)=\varphi(D)\leq\alpha
+     \end{align*}
+     \qed
+     
+     \paragraph{12.5. Definition:} 
+     \begin{enumerate}[label=(\roman*)]
+         \item $\mu$ und $\nu$ sind gegenseitig singular (kurz $\mu\perp\nu$), wenn
+         $$\exists M\in\mathcal{A}:\mu(M)=0, \nu(M^c)=0$$
+         Die Relation $\perp$ ist symmetrisch, i.e. $\mu\perp\nu\iff\nu\perp\mu$.
+         \item $\nu$ ist absolut stetig bez\"uglich $\mu$, (kurz $\nu\ll\mu$) wenn
+         $$\forall A\in\mathcal{A}: \mu(A)=0\implies\nu(A)=0$$
+         Die Relation $\ll$ ist transitiv, i.e. $\nu\ll\mu,\mu\ll\lambda\implies\nu\ll\lambda$.
+     \end{enumerate}
+     
+     \paragraph{12.6. Lemma:} Seien $\mu$ und $\nu$ zwei endliche Ma\ss{}e, die NICHT gegenseitig singular sind. Dann gibt es ein $\eps>0$ und $N\in\mathcal{A}$ mit $\mu(B)>0$, sodass
+     $$\forall A\in\mathcal{A}:\eps\cdot\mu(A\cap B)\leq\nu(A\cap B)$$
+     
+     \paragraph{Beweis: }F\"ur $n\geq1$ definiere ein signiertes Ma\ss{} $\varphi_n:=\nu-\mu/n$. Seien nun $\Omega^{(n)}_+$ und $\Omega^{(n)}_-$ die Hahn-Zerlegung von $\varphi_n$. Setze $M:=\bigcup_{n\geq1}\Omega^{(n)}_+$ und $M^c=\bigcap_{n\geq1}\Omega^{(n)}_-$. Da $\varphi_1\leq\hdots\leq\displaystyle\lim_{n\to\infty}\varphi_n=\nu$, gilt $\Omega^{(1)}_+\supseteq\hdots\supseteq M^c$ und mit der S.v.O. f\"ur signierte Ma\ss{}e $\forall n\geq1:\varphi_n(M^c)\leq0$. \newline Damit folgtper Definition f\"ur alle $n\geq1$
+     \begin{align*}
+         \nu(M^c)-\dfrac{1}{n}\mu(M^c)\leq0 \iff \nu(M^c)\leq\dfrac{1}{n}\mu(M^c)
+     \end{align*}
+     und damit $\nu(M^c)=0$. Laut Annahme git aber $\nu\xcancel{\perp}\mu$ und damit $\mu(M)>0$. Also folgt
+     $$0<\mu(M)\leq\sum_{n\geq1}\mu(\Omega^{(n)}_+)$$
+     und damit gibt es ein $m\geq1$, sodass $\mu(\Omega^{(m)}_+)>0\ (*)$. Mit der Definition von $\varphi_m$ gilt aber
+     $$\forall A\in\mathcal{A}:\nu(A\cap \Omega^{(m)}_+)-\dfrac{1}{m}\mu(A\cap \Omega^{(m)}_+)\geq0\iff\nu(A\cap \Omega^{(m)}_+)\geq\dfrac{1}{m}\mu(A\cap \Omega^{(m)}_+)$$
+     Setze also $B:=\Omega^{(m)}_+$ mit $\eps:=m^{-1}$. Dann gilt wegen $(*)$ auch $\mu(B)=\mu(\Omega^{(m)}_+)>0$. \qed
+     
+     \paragraph{12.7. Satz (Radon\textendash Nikodym Theorem f\"ur $\sigma$-endliche Ma\ss{}e):} Seien $\mu$ und $\nu$ zwei $\sigma$-endliche Ma\ss{}e, sodass $\nu\ll\mu$. Dann hat $\nu$ eine Dichte bez\"uglich $\mu$, i.e. es gibt ein $f:\Omega\to\R$ messbar, sodass
+     \begin{equation}
+         \forall A\in\mathcal{A}: \nu(A)=\int_A f \ d\mu
+     \end{equation}
+     Wir schreiben $f=\dfrac{d\nu}{d\mu}$. Falls insbesondere $g:\Omega\to\R$ eine weitere messbare Abbildung ist, die (7) erf\"ullt, dann gilt $f=g$ $\mu$-a.e.
+     
+     \paragraph{Beweis:} Unterscheide hier die F\"alle, wo $\mu,\nu$ beide endlich sind, und den allgemeinen Fall ($\mu,\nu$ beide $\sigma$-endlich).\newline\newline
+     1. Fall ($\mu,\nu$ beide endlich): Betrachte die Menge
+     $$\mathcal{G}:=\left\{g\geq0:g \text{ messbar und } \forall A\in\mathcal{A}:\int_A g\ d\mu\leq\nu(A)\right\}$$
+     Da die konstante Nullfunktion $0\in\mathcal{G}$, gilt $\mathcal{G}\neq\emptyset$ und es gibt ein $f\in\mathcal{G}$, sodass
+     \begin{equation}
+         \int f\ d\mu=\sup_{g\in\mathcal{G}}\int g\ d\mu
+     \end{equation}
+     Zerlege nun $\nu(\cdot)$ als $\nu(A)=\displaystyle\int_A f\ d\mu+\nu_s(A)$ f\"ur $A\in\mathcal{A}$
+     mit Rest $\nu_s(\cdot)$. Dann ist $\nu_s$ ein endliches Ma\ss{} und
+     \begin{equation}
+         \nu_s\perp\mu
+     \end{equation}
+     Zeige also (8) und (9):\newline
+     (8): F\"ur $g,h\in\mathcal{G}$ ist $\max(g,h)\in\mathcal{G}$, denn f\"ur $A\in\mathcal{A}$ gilt
+     $$\int_A \max(g,h)\ d\mu=\int\displaylimits_{A\cap\{g\geq h\}}g\ d\mu+\int\displaylimits_{A\cap\{g<h\}}h\ d\mu\overset{g,h,\in\mathcal{G}}{\leq}\nu(A\cap\{g\geq h\})+\nu(A\cap\{g<h\})=\nu(A)$$
+     F\"ur $g_n\in\mathcal{G},n\geq1$ mit $0\leq g_1\leq\hdots\leq\lim_{n\to\infty}g_n=:g$ ist $g\in\mathcal{G}$, denn f\"ur $A\in\mathcal{A}$ gilt
+     $$\int_A g \ d\mu\overset{\text{MONK}}{=}\lim_{n\to\infty}\int_A g_n\ d\mu\leq\nu(A)$$
+     wobei die letze Ungleichung folgt, da jedes Element der Folge $\int_A g_n \ d\mu$ durch $\nu(A)$ beschr\"ankt ist.\newline\newline
+     (9): Angenommen (9) gilt nicht. Mit Lemma 12.6 gibt es $\eps>0,b\in\mathcal{A}$ mit $\mu(B)>0$, sodass $\forall A\in\mathcal{A}:\eps\cdot \mu(A\cap B)\leq\nu_s(A\cap B)$. Damit folgt f\"ur $A\in\mathcal{A}$
+     \begin{align*}
+         \int_A (f+\eps\cdot\ind{B})\ d\mu&=\int_A f\ d\mu+\eps\cdot\mu(A\cap B)\\
+         &\leq\int_A f\ d\mu+\nu_s(A\cap B) \\
+         &\leq\int_A f\ d\mu+\nu_s(A)=\nu(A)
+     \end{align*}
+     Damit folgt $f+\eps\cdot\ind{B}\in\mathcal{G}$ und 
+     $$\sup_{g\in\mathcal{G}}\int g\ d\mu\geq\int(f+\eps\cdot\ind{B})\ d\mu=\int f\ d\mu\eps\cdot\mu(B)>\int f\ d\mu=\sup_{g\in\mathcal{G}}\int g\ d\mu$$
+     ein Widerspruch.
+     \newline\newline
+     Mit (9) folgt per Definition von gegenseitiger Singularit\"at
+     $$\exists M\in\mathcal{A}:\mu(M)=0,\ \nu_s(M^c)=0$$. Da aber $\nu\ll\mu$ ist $\nu(M)=0$ und
+     $$0=\nu(M)\overset{\text{per const.}}{\geq}\nu_s(M)\geq0$$
+     und damit 
+     $$\nu_s(\Omega)=\nu_s(M)+\nu(M^c)=0$$
+     Also ist $\nu_s$ das Nullma\ss{} und $\nu(A)=\int_A f\ d\mu$, womit die erste Aussage folgt.\newline
+     Sei nun $g$ eine weitere Dichte von $\nu$ bzgl. $\mu$ (also eine messbare Abbildung, die (7) erf\"ullt). Setze $A:=\{f>g\}$. Dann ist
+     \begin{align*}
+         0&=\nu(A)-\nu(A)\\
+         &=\int_A f\ d\mu-\int_A g\ d\mu\\
+         &=\int_A f-g\ d\mu \\
+         &=\int\ind{\{f-g>0\}}(f-g)\ d\mu
+     \end{align*}
+     und da im Integral $f-g>0$, gilt $\ind{A}\overset{a.e.}{=}0$ und $\mu(A)=0$
+     Ein \"ahnliches Argument folgt f\"ur $B:=\{f<g\}$ und die Aussage folgt schlie\ss{}lich mit der $\sigma$-Subadditivit\"at.\newline\newline
+     2. Fall: ($\mu,\nu$ beide $\sigma$-endlich): W\"ahle $A_n\in\mathcal{A},n\geq1$ mit $A_1\subseteq\hdots\subseteq\bigcup_{n\geq1}A_n=\Omega$, sodass $\mu(A_n)<\infty$ f\"ur alle $n\geq1$. W\"ahle $B_n\in\mathcal{A}$ mit denselben Eigenschaften f\"ur $\nu$. Setze nun $C_n:=A_n\cap B_n$ f\"ur $n\geq1$, sodass $C_n\in\mathcal{A}$ und $C_1\subseteq\hdots\subseteq\bigcup_{n\geq1}C_n=\Omega$ und $\mu(C_n),\nu(C_n)<\infty$ f\"ur alle $n\geq1$. Disjunktisiere nun $C_n$ durch $M_1:=C_1$ und $M_{n+1}:=C_{n+1}\setminus C_n$ f\"ur alle $n\geq1$. Dann gilt $\Omega=\bigsqcup_{n\geq1}M_n$ und $\mu(M_n),\nu(M_n)<\infty$ f\"ur alle $n\geq1$. Definiere nun endlich Ma\ss{}e $\nu_n$ und $\mu_n$ wie folgt:
+     \begin{gather*}
+         \nu_n(A):=\nu(A\cap M_n) \\
+         \mu_n(A):=\mu(A\cap M_n)
+     \end{gather*}
+     f\"ur alle $n\geq1$ und $A\in\mathcal{A}$. Laut Voraussetzung ist $\nu\ll\mu$ und daher auch $\nu_n\ll\mu_n$ f\"ur alle $n\geq1$. Mit dem 1. Fall hat also f\"ur jedes $n\geq1$ $\nu_n$ eine Dichte $f_n$ bzgl. $\mu_n$. Setze nun 
+     $$f:=\sum_{n\geq1}f_n\cdot\ind{M_n}$$
+     Dann ist $f\geq0$ und messbar und f\"ur $A\in\mathcal{A}$ gilt
+     \begin{align*}
+         \int_A f\ d\mu&=\int\sum_{n\geq1}f_n\cdot\ind{M_n}\cdot\ind{A}\ d\mu\\
+         &\overset{\text{MONK}}{=}\sum_{n\geq1}\int f_n\cdot\ind{M_n}\cdot\ind{A}\ d\mu \\
+         &=\sum_{n\geq1}\int_A f_n\cdot\ind{M_n}\ d\mu \\
+         &=\sum_{n\geq1}\int_A f_n\ d\mu_n\\
+         &=\sum_{n\geq1}\nu_n(A)\\
+         &=\sum_{n\geq1}\nu(A\cap M_n)=\nu(A)
+     \end{align*}
+     Die Eindeutigkeit folgt wie im endlichen Fall. \qed
+     
+     \paragraph{12.8. Satz (Radon\textendash Nikodym Theorem f\"ur signierte Ma\ss{}e)} folgt.
+     Sei $\varphi$ ein signiertes Maß und $\mu$ ein $\sigma$-endliches Maß, sodass $\varphi\ll\mu$.Dann hat $\varphi$ eine Dichte bez\"uglich $\mu$, i.e. es gibt ein $f:\Omega\to\R$ messbar, sodass
+     \begin{equation*}
+         \forall A\in\mathcal{A}: \varphi(A)=\int_A f \ d\mu
+     \end{equation*}
+     Wir schreiben $f=\dfrac{d\varphi}{d\mu}$. Falls insbesondere $g:\Omega\to\R$ eine weitere messbare Abbildung ist, die (7) erf\"ullt, dann gilt $f=g$ $\mu$-a.e.
+     
+     \paragraph{Beweis:}Betrachte die Hahn-Zerlegung $\Omega=\Omega_+\cup\Omega_-$ und die Jordan-Zerlegung $\varphi=\varphi_+-\varphi_-$. Dann sind $\varphi_+$ und $\varphi_-$ beide endliche Maße und $\varphi_+\ll\mu$, $\varphi_-\ll\mu$. Setze also 
+     $$f_{(+)}:=\dfrac{d\varphi_+}{d\mu},\ f_{(-)}:=\dfrac{d\varphi_-}{d\mu},\ f:=f_{(+)}-f_{(-)}$$
+     Die Messbarkeit von $f$ folgt sofort aus der Messbarkeit von $f_{(+)},f_{(-)}$ laut Satz 12.7. Weiters gilt $f_{(+)},f_{(-)}\in L_1(\mu)$ und damit auch $f\in L_1(\mu)$. Dass $f$ eine Dichte von $\varphi$ bezüglich $\mu$ ist folgt mit
+     $$\varphi(A)=\varphi_+(A)-\varphi_-(A)=\int_A f_{(+)}\ d\mu-\int f_{(-)}\ d\mu=\int_A f\ d\mu$$
+     Ist $g$ eine weitere Dichte von $\varphi$ bezüglich $\mu$, dann ist $g\cdot\ind{\Omega_+}$ eine Dichte von $\varphi_+$ bezüglich $\mu$ und mit Satz 12.7 gilt $g\cdot\ind{\Omega_+}\overset{a.e.}{=}f_{(+)}$. Dasselbe folgt für $g\cdot\ind{\Omega_-}$ und $f_{(-)}$. Da die Vereinigung zweier Nullmengen wieder eine Nullmenge ist folgt
+     $$g\overset{a.e.}{=}f$$
+     \qed
+     
+     \chapter*{13. Bedingte Erwartungswerte und Wahrscheinlichkeiten}
+     \addcontentsline{toc}{chapter}{13. Bedingte Erwartungswerte und Wahrscheinlichkeiten}
+     \paragraph{13.1. Definition:} Betrachte einen Wahrscheinlichkeitsraum $\pspace$ mit einer sub-$\sigma$-Algebra $\G\subseteq\A$ und eine Zufallsvariable $X\in L_1\pspace$, i.e. $\A$-messbar und integrierbar. F\"ur $G\in\G$ sei $\nu(G):=\int_G X\ d\Pp=\E\left[\ind{G}X\right]$ und $\Pp_\G(G):=\Pp(G)$. Dann ist $\nu$ ein signiertes Ma\ss{} auf $(\Omega,\G)$ und $\Pp_\G$ ist ein Wahrscheinlichkeitsma\ss{} (und damit endlich) auf $(\Omega,\G)$, sodass $\nu\ll\Pp_\G$. \newline
+     Der bedingte Erwartungswert von $X$ bez\"uglich $\G$ ist dann definiert als
+     $$\E[X\parallel \G]:=\dfrac{d\nu}{d\Pp_\G}$$
+     F\"ur eine weitere Zufallsvariable $Y$ auf $\pspace$, setzt man 
+     $$\E[X\parallel Y]:=\E[X\parallel\sigma(Y)]$$
+     F\"ur $A\in\A$ setzt man
+     $$\Pp(A\parallel\G):=\E[\ind{A}\parallel\G]$$
+     
+     \paragraph{Bemerkung:}$\E[X\parallel\G]$ ist fast sicher eindeutig, d.h. falls $Y$ eine $\G$-messbare Zufallsvariable ist und $\forall G\in\G:\E[Y\cdot\ind{G}]=\E[X\cdot\ind{G}]$, dann gilt $Y\overset{a.s.}{=}\E[X\parallel\G]$. Mit Satz kann man den bedingten Erwartungswert $\E[X\parallel\G]$ auch f\"ur quasiintegrierbare $X$ definieren (Details \"Ubung).
+     
+     % In diesem Beispiel verstehe ich noch nicht ganz woher A und B sind und was im pdf der Unterschied zwischen bedingter Wahrscheinlichkeit mit einem vertikalen Strich und zwei vertikalen Strichen ist.
+     \paragraph{13.2. Beispiel:}Sei $\pspace$ ein Wahrscheinlichkeitsraum mit einer sub-$\sigma$-Algebra $\G\subseteq\A$. F\"ur $X=\ind{A}$ und $Y=\ind{B}$ mit $A,B\in\A$ mit $0<\Pp(B)<1$ ist
+     \begin{align*}
+         \Pp(A\parallel \ind{B})(\omega)=
+         \begin{cases}
+             \Pp(A\parallel B)(\omega)\ \ &\text{ wenn }\omega\in B \\
+             \Pp(A\parallel B^c)(\omega)&\text{ wenn }\omega\notin B
+         \end{cases}
+     \end{align*}
+     Weiters ist $\Omega\in\sigma(B)$, sodass f\"ur $\ind{\Omega}=1$ gilt:
+     \begin{align*}
+         \Pp(A)&=\E\ind{A}=\E[\ind{A}\cdot\ind{\Omega}]\\
+         &\overset{\text{Def.}}{=}\int_\Omega\E[\ind{A}\parallel\sigma(B)]\ d\Pp\\
+         &=\int_\Omega\Pp(A\parallel\ind{B})\ d\Pp \\
+         &\overset{\text{s.o.}}{=}\Pp(A\parallel B)\cdot\Pp(B)+\Pp(A\parallel B^c)
+     \end{align*}
+     
+     % Hier wollte ich fragen warum X auf einmal Werte in den erweiterten reellen Zahlen annimmt? Falls das so stimmt, sollte man das in Definition 13.1 erg\"anzen (Nevermind, da X in L1 ist, ist X sowieso endlich fast überall).
+     \section*{Eigenschaften bedingter Erwartungswerte}
+     \addcontentsline{toc}{section}{Eigenschaften bedingter Erwartungswerte}
+
+     \paragraph{13.3. Proposition:}Sei $X\in L_1\pspace$ und $\G\subseteq\A$ eine sub-$\sigma$-Algebra.
+     \begin{enumerate}[label=(\roman*)]
+         \item Sind $\sigma(X)$ und $\G$ unabh\"angig, dann gilt $\E[X\parallel\G]\overset{a.s.}{=}\E [X]$.
+         \item Ist $X$ $\G\textendash\mathcal{B}(\overline\R)$-messbar, dann ist $\E[X\parallel\G]\overset{a.s.}{=}X$
+     \end{enumerate}
+     
+     % Ich denke nicht, dass wir im Beweis von (i) die G-Messbarkeit von E(X) brauchen?
+     \paragraph{Beweis:}
+     \begin{enumerate}[label=(\roman*)]
+         \item Die konstante Zufallsvariable $\E [X]$ ist nat\"urlich $\G$-messbar und f\"ur $G\in\G$ sind $\ind{G}$ und $X$ unabh\"angig (per Definition), sodass
+         $$\E[\E[X]\cdot\ind{G}]=\E [X]\cdot\E[\ind G]\overset{\text{u.a.}}{=}\E[X\cdot\ind{G}]$$
+         \item Wenn $X$ $\G\textendash\mathcal{B}(\overline\R)$-messbar ist, ist $X$ eine Dichte gem\"a\ss{} Definition 13.1, da trivial
+         $$\E[X\cdot\ind{G}]=\E[X\cdot\ind{G}]$$
+     \end{enumerate}
+     \qed
+     
+     \paragraph{Bemerkung:}Damit gilt f\"ur $X\in L_1\pspace$ sofort
+     \begin{itemize}
+         \item $\E[X\parallel\{\emptyset,\Omega\}]\overset{a.s.}{=}\E[X]$
+         \item $\E[X\parallel\A]\overset{a.s.}{=}X$
+     \end{itemize}
+     
+     % Auch hier sollte man denke ich erg\"anzen, ob X_n,X,Y reelwertig oder erweitert-reellwertig sind.
+     \paragraph{13.4. Proposition:}Sei $\pspace$ ein Wahrscheinlichkeitsraum mit einer sub-$\sigma$-Algebra $\G\subseteq\A$, $X_n,n\geq1$ eine Folge von $\pspace$-integrierbaren Zufallsvariablen und $X,Y$ $\pspace$-integrierbare Zufallsvariablen. Seien au\ss{}erdem $a,b\in\R$. Dann gilt
+     \begin{enumerate}[label=(\roman*)]
+         \item Ist $X\overset{a.s.}{=}a$, dann ist $\E[X\parallel \G]\overset{a.s.}{=}a$
+         \item $\E[aX+bY\parallel\G]\overset{a.s.}{=}a\cdot\E[X\parallel G]+b\cdot\E[Y\parallel\G]$ \textbf{(Linearität)}
+         \item Ist $X\overset{a.s.}{\leq}Y$, dann ist $\E[X\parallel\G]\leq\E[Y\parallel\G]$ \textbf{(Monotonie)}
+         \item $\left|\E[X\parallel\G]\right|\overset{a.s.}{\leq}\E[|X|\parallel\G]$ \textbf{(Dreiecksungleichung)}
+         \item Für $X_1\leq X_2\leq\hdots\leq\lim_{n\to\infty}X_n$ fast sicher, ist \textbf{(MONK)}
+         $$\lim_{n\to\infty}\E[X_n\parallel\G]\overset{a.s.}{=}\E\left[\lim_{n\to\infty}X_n\parallel\G\right]$$
+         \item Falls $\forall n\geq1:Y\overset{a.s.}{\leq} X_n$ und $\liminf_{n\to\infty}X_n\in L_1$, dann ist \textbf{(Fatou's Lemma)}
+         $$\E[\liminf_{n\to\infty}X_n\parallel\G]\overset{a.s.}{\leq}\liminf_{n\to\infty}\E[X_n\parallel\G]$$
+         \item Falls $X_n\nto{a.s.}{n\to\infty}X$ und $\forall n\geq1:|X_n|\overset{a.s.}{\leq}Y$, dann ist $X\in L_1$ und \textbf{(DOMK)}
+         $$\lim_{n\to\infty}\E[X_n\parallel\G]\overset{a.s.}{=}\E[X\parallel\G]$$
+     \end{enumerate}
+     
+     \paragraph{Beweis:}
+     \begin{enumerate}[label=(\roman*)]
+         \item folgt sofort aus Proposition 13.3 und der Tatsache, dass $X$ u.a. von jedem $\G$ ist.
+         \item $a\cdot\E[X\parallel\G]+b\cdot\E[Y\parallel\G]$ ist als Linearkombination $\G$-messbarer Funktionen wieder $\G$-messbar und für $G\in\G$ gilt:
+         \begin{align*}
+             \int_Ga\cdot\E[X\parallel\G]+b\cdot\E[Y\parallel\G]\ d\Pp&=a\int_G\E[X\parallel\G]\ d\Pp+b\int_G\E[Y\parallel\G]\ d\Pp\\
+             &=a\cdot\E[X\cdot\ind{G}]+b\cdot\E[Y\cdot\ind{G}]\\
+             &=\E\left[(aX+bY)\cdot\ind{G}\right]
+         \end{align*}
+         Die Aussage folgt mit Definition 13.1 und Satz 12.8.
+         \item Hier ist insbesondere $X_+\overset{a.s.}{\leq}Y_+$, sodass $0\overset{a.s.}{\leq} Y_+-X_+$. Sei $G:=\left\{\E[X_+\parallel\G]>\E[Y_+\parallel\G]\right\}$. Dann ist $G$ messbar und 
+         $$\int_G\E[X_+\parallel\G]-\E[Y_+\parallel\G]\ d\Pp\overset{\text{(ii)}}{=}\int_G\E[X_+-Y_+\parallel\G]\ d\Pp=\E[(X_+-Y_+)\cdot\ind{G}]$$
+         wobei das linke Integral nicht-negativ und das rechte Integral nicht-positiv ist, sodass $\Pp(G)=0$ folgt. Ein ähnliches Argument gilt für $X_-$ und $Y_-$, sodass folgt
+         $$\E[X\parallel\G]=\E[X_+\parallel\G]-\E[X_-\parallel\G]\leq\E[Y_+\parallel\G]-\E[Y_-\parallel\G]=\E[Y\parallel\G]$$
+         wobei alle Relationen fast sicher gelten. 
+         \item Aus $X\leq|X|$ folgt mit (iii), dass 
+         $$\E[X\parallel\G]\overset{a.s.}{\leq}\E[|X|\parallel\G]$$ 
+         Aus $-X\leq|X|$ folgt mit (ii) und (iii), dass 
+         $$-\E[X\parallel\G]\overset{a.s.}{=}\E[-X\parallel\G]\overset{a.s.}{\leq}\E[|X|\parallel\G]$$
+         womit die Aussage aus der Kombination beider Fälle folgt.
+         \item Mit (iii) gilt $\E[X_1\parallel\G]\leq\E[X_2\parallel\G]\leq\hdots\leq\lim_{n\to\infty}\E[X_n\parallel\G]$. Damit ist $\lim_{n\to\infty}\E[X_n\parallel\G]$ als Grenzwert $\G$-messbarer Funktionen messbar. Mit (iv) ist $|\E[X_1\parallel\G]|\overset{a.s.}{\leq}\E[|X_1|\parallel\G]$, und damit $\E[X_1\parallel\G]\in L_1$. Mit MONK gilt für $G\in\G$
+         \begin{align*}
+             \int_G\lim_{n\to\infty}\E[X_n\parallel\G]\ d\Pp&=\lim_{n\to\infty}\int_G\E[X_n\parallel\G]\ d\Pp\\
+             &=\lim_{n\to\infty}\E[X_n\cdot\ind{G}]\\
+             &\overset{\text{MONK}}{=}\E[X\cdot\ind{G}]
+         \end{align*}
+         womit per Definition 13.1 die Aussage folgt.
+         \item Für $Z_n:=\inf_{k\geq n}X_k$ gilt $Z_1\leq\hdots\leq\lim_{n\to\infty}Z_n=\liminf_{n\to\infty}X_n\in L_1$. Es gilt $Z_n\overset{a.s.}{\leq}X_k$ für alle $k\geq n$, sodass mit (iii)
+         $$\E[Z_n\parallel\G]\overset{a.s.}{\leq}\inf_{k\geq n}\E[X_k\parallel\G]$$
+         und damit
+         \begin{align*}
+             \E[\liminf_{n\to\infty}X_n\parallel\G]\overset{\text{(v)}}{=}\lim_{n\to\infty}\E[Z_n\parallel\G]\leq\lim_{n\to\infty}\inf_{k\geq n}\E[X_k\parallel\G]=\liminf_{n\to\infty}\E[X_n\parallel\G]
+         \end{align*} 
+         wobei in der letzten Ungleichung die ersten beiden Relationen als fast sicher zu verstehen sind.
+         \item Mit DOMK ist $X\in L_1$ und $\lim_{n\to\infty}\E[X_n]=\E[X]$. Mit (iii) und (iv) gilt 
+         $$|\E[X_n\parallel\G]|\overset{a.s.}{\leq}\E[|X_n|\parallel\G]\overset{a.s.}{\leq}\E[Y_n\parallel\G]$$
+         Mit (vi) gilt
+         $$\E[X\parallel\G]\overset{a.s.}{=}\E[\liminf_{n\to\infty}X_n\parallel\G]\overset{a.s.}{\leq}\liminf_{n\to\infty}\E[X_n\parallel\G]$$
+         wobei die letze Ungleichung folgt, da laut Annahme $\E[-Y\parallel\G]\leq\E[X_n\parallel\G]$ für alle $n\geq1$. Ebenfalls gilt
+         \begin{align*}
+             -\E[X\parallel\G]&\overset{a.s.}{=}\E[-X\parallel\G]\\
+             &\overset{a.s.}{=}\E[\liminf_{n\to\infty}(-X_n)\parallel\G]\\
+             &\overset{a.s.}{\leq}\liminf_{n\to\infty}\E[-X_n\parallel\G]\\
+             &\overset{a.s.}{=}-\limsup_{n\to\infty}\E[X_n\parallel\G]
+         \end{align*}
+         Damit gilt 
+         $$\limsup_{n\to\infty}\E[X_n\parallel\G]\overset{a.s.}{\leq}\E[X\parallel\G]\overset{a.s.}{\leq}\liminf_{n\to\infty}\E[X_n\parallel\G]$$
+         und damit folgt die Aussage. \qed
+     \end{enumerate}
+     
+     \paragraph{13.5. Proposition:}Sei $\G\subseteq\A$ eine sub-$\sigma$-Algebra und seien $X,U$ Zufallsvariablen, sodass $X,UX\in L_1$. Falls $U$ $\G-\borel$-messbar ist, dann gilt
+     $$\E[UX\parallel\G]\overset{a.s.}{=}U\cdot\E[X\parallel\G]$$
+     
+     \paragraph{Beweis:}$U\cdot\E[X\parallel\G]$ ist $\G$-messbar.
+     \begin{enumerate}[label=\Roman*.]
+         \item $U=\ind{H},H\in\G$\newline
+         $$\forall G\in\G:\int_GU\cdot\E[X\parallel\G]\ d\Pp=\int_{G\cap G}\E[X\parallel\G]\ d\Pp=\E[X\cdot\ind{G\cap H}]=\E[UX\cdot\ind{G}]$$
+         \item $U$ einfach\newline
+         folgt aus I. und der Linearität des bedingten Erwartungswertes.
+         \item $U\geq0$\newline
+         Wähle $U_n,n\geq1$ einfach und $\G$-messbar mit $0\leq U_n\nearrow U$. Dann gilt $U_nX\to UX$ und $|U_nX|=|U_n||X|\leq|U||X|$. Es folgt
+         \begin{align*}
+             \E[UX\parallel\G]\overset{\text{DOMK}}{=}\lim_{n\to\infty}\E[U_n X\parallel{\G}]\overset{\text{II.}}{=}\lim_{n\to\infty}U_n\cdot\E[X\parallel\G]=U\cdot\E[X\parallel\G]
+         \end{align*}
+         \item $U$ allgemein\newline
+         Schreibe $U=U_+-U-$. Dann gilt
+         \begin{align*}
+             \E[UX\parallel\G]&=\E[(U_+-U_-)X\parallel\G]\\
+             &\overset{a.s.}{=}\E[U_+X\parallel\G]-\E[U_-X\parallel\G]\\
+             &\overset{a.s.}{=}(U_+)\cdot\E[X\parallel\G]-(U_-)\cdot\E[X\parallel\G]\\
+             &\overset{a.s.}{=}(U_+-U_-)\cdot\E[X\parallel\G]=U\cdot\E[X\parallel\G]
+         \end{align*}
+         \qed
+     \end{enumerate}
+     
+     \paragraph{13.6. Proposition:}Seien $\G$ und $\mathcal{H}$ sub-$\sigma$-Algebren, sodass $\mathcal{H}\subseteq\G\subseteq\A$. Sei $X\in L_1$. Dann gilt
+     $$\E[X\parallel\mathcal{H}]\overset{\text{(i)}}{=}\E[\E[X\parallel\mathcal{H}]\parallel\G]\overset{\text{(ii)}}{=}\E[\E[X\parallel\G]\parallel\mathcal{H}]$$
+     fast sicher.
+     
+     \paragraph{Beweis:}
+     \begin{enumerate}[label=(\roman*)]
+         \item folgt sofort, da $\E[X\parallel\mathcal{H}]$ $\mathcal{H}$-messbar und damit auch $\G$-messbar ist. Mit Proposition 13.3 gilt
+         $$\E[X\parallel\mathcal{H}]\overset{a.s.}{=}\E[\E[X\parallel\mathcal{H}]\parallel\G]$$
+         \item $\E[\E[X\parallel\G]\parallel\mathcal{H}]$ ist $\mathcal{H}$-messbar und damit auch $\G$-messbar. Es gilt
+         \begin{align*}
+             \forall H\in\mathcal{H}:\int_H\E[\E[X\parallel\G]\parallel\mathcal{H}]\ d\Pp&=\int_H\E[X\parallel\G]\ d\Pp\\
+             &=\int_H X\ d\Pp
+         \end{align*}
+         da $H\in\mathcal{H}\implies H\in\G$. Mit Definition 13.1 und Satz 12.8 folgt die Aussage. \qed
+    \end{enumerate}
+    
+    \section*{Bedingte Verteilungen}
+    \addcontentsline{toc}{section}{Bedingte Verteilungen}
+    
+    \paragraph{13.7. Satz:} Sei $\G\subseteq\A$ eine sub-$\sigma$-Algebra und sei $X$ eine reelwertige Zufallsvariable. Dann existiert eine Funktion $\mu:\borel\times\Omega\to[0,1]$ mit den folgenden Eigenschaften:
+    \begin{enumerate}[label=(\roman*)]
+        \item Für $\omega\in\Omega$ fest ist $\mu(\cdotp,\omega):\borel\to[0,1]$ ein Wahrscheinlichkeitsmaß.
+        \item Für $B\in\borel$ fest, gilt für $\mu(B,\cdotp):\Omega\to[0,1]$, dass $\mu(B,\cdotp)=\Pp(X\in B\parallel\G)$ fast sicher. 
+    \end{enumerate} 
+    Man nennt $\mu(\cdotp,\omega)$ die bedingte Verteilung von $X$ gegeben $\G$.
+    
+    \paragraph{Beweis:}Für $q\in\mathbb{Q}$ sei $F(q,\omega):=\Pp(X\leq q\parallel\G)(\omega)$. Für $q,r\in\mathbb{Q}$ mit $q\leq r$ gilt damit (Monotonie des bedingten Erwartungswertes, Proposition 13.4)
+    \begin{equation}
+        F(q,\omega)\leq F(r,\omega)
+    \end{equation}
+    für alle $w$ außerhalb einer $\Pp$-Nullmenge. Mit DOMK für bedingte Erwartungswerte (Proposition 13.4) gilt
+    \begin{equation}
+        \forall q\in\mathbb{Q}:F(q,\omega)=\lim_{n\to\infty}F\left(q+\frac{1}{n},\omega\right)
+    \end{equation}
+    für $\omega$ außerhalb einer $\Pp$-Nullmenge und (DOMK)
+    \begin{equation}
+        \lim_{n\to\infty}F(-n,\omega)=0\text{ und }\lim_{n\to\infty}F(n,\omega)=1
+    \end{equation}
+    außerhalb einer $\Pp$-Nullmenge. Sei $N$ die abzählbare Vereinigung der in (10), (11) und (12) auftretenden Nullmengen Dann ist $N$ wieder eine $\Pp$-Nullmenge und (10), (11), (12) gelten für jedes $\omega\in N^c$.\newline\newline
+    Sei nun $t\in\R$. Für $\omega\in N^c$ setze
+    $$F(t,\omega):=\inf\left\{F(q,\omega):t\leq q,q\in\mathbb{Q}\right\}$$
+    und für $\omega\in N$ setze $F(t,\omega):=F(t)$ für eine beliebige fest cdf $F$. Mit (10), (11) und (12) ist $F(\cdotp,\omega)$ eine cdf für jedes $\omega\in\Omega$. Für $\omega\in\Omega$ sei nun $\mu(\cdotp\omega)$ das durch $F(\cdotp.\omega)$ bestimmte Wahrscheinlichkeitsmaß auf $(\R,\borel)$. Damit gilt (i). \newline\newline
+    Die Mengenfamilie
+    $$\mathcal{L}:=\left\{B\in\borel:\mu(B,\cdotp)\text{ ist }\G\text{-messbar}\right\}$$
+    ist ein $\lambda$-System (leicht zu prüfen) und enthält das $\pi$-System $\mathcal{M}:=\left\{(-\infty,q]:q\in\mathcal{Q}\right\}$. Mit dem $\lambda\textendash\pi$-Theorem gilt
+    $$\borel=\sigma(\mathcal{M})=\lambda(\mathcal{M})\subseteq\mathcal{L}\subseteq\borel$$
+    Also gilt $\mathcal{L}=\borel$ und $\mu(B,\cdotp)$ ist für jedes $B\in\borel$ $\G$-messbar. \newline\newline
+    Für $B=(-\infty,q]$ mit $q\in\mathbb{Q}$ ist $\mu(B,\cdotp)=\Pp(X\leq q\parallel\G)$ laut Konstruktion, sodass für $G\in\G$ gilt
+    \begin{equation}
+        \E[\ind{G}\cdot\mu(B,\cdotp)]=\Pp(G\cap\{X\in B\})
+    \end{equation}
+    Für $G\in\G$ fest gilt (13) für jede Menge $B\in\mathcal{M}$. Sei nun 
+    $$\mathcal{Z}:=\left\{B\in\borel:\E[\ind{G}\cdot\mu(B,\cdotp)]=\Pp(G\cap\{X\in B\})\right\}$$
+    Nun sind in (14) beide Seiten der Gleichung endliche Maße, die auf dem $\pi$-System $\mathcal{M}$ übereinstimmen. Mit Korollar 2.9 folgt, dass die beiden Maße auch auf $\sigma(\mathcal{M})=\borel$ übereinstimmen. Also gilt (13) für alle $B\in\borel$. Mit Definition 13.1 folgt Aussage (ii). \qed
+\end{document}
